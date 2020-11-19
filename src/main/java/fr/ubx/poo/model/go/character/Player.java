@@ -10,26 +10,20 @@ import fr.ubx.poo.model.Movable;
 import fr.ubx.poo.model.go.GameObject;
 import fr.ubx.poo.game.Game;
 
-public class Player extends GameObject implements Movable {
+public class Player extends Character {
 
     private final boolean alive = true;
-    Direction direction;
     private boolean moveRequested = false;
     private int lives = 1;
     private boolean winner;
 
     public Player(Game game, Position position) {
         super(game, position);
-        this.direction = Direction.S;
         this.lives = game.getInitPlayerLives();
     }
 
     public int getLives() {
         return lives;
-    }
-
-    public Direction getDirection() {
-        return direction;
     }
 
     public void requestMove(Direction direction) {

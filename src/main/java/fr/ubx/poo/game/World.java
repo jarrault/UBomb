@@ -21,15 +21,15 @@ public class World {
         grid = WorldBuilder.build(raw, dimension);
     }
 
-    public Position findPlayer() throws PositionNotFoundException {
+    public Position findCharacter(WorldEntity type) throws PositionNotFoundException {
         for (int x = 0; x < dimension.width; x++) {
             for (int y = 0; y < dimension.height; y++) {
-                if (raw[y][x] == WorldEntity.Player) {
+                if (raw[y][x] == type) {
                     return new Position(x, y);
                 }
             }
         }
-        throw new PositionNotFoundException("Player");
+        throw new PositionNotFoundException(type.name());
     }
 
     public Decor get(Position position) {
