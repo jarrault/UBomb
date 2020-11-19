@@ -35,7 +35,9 @@ public class Player extends Character {
 
     @Override
     public boolean canMove(Direction direction) {
-        return true;
+        Position nextPos = direction.nextPosition(getPosition());
+
+        return this.game.getWorld().isInside(nextPos);
     }
 
     public void doMove(Direction direction) {
