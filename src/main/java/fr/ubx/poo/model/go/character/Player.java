@@ -6,8 +6,10 @@ package fr.ubx.poo.model.go.character;
 
 import fr.ubx.poo.game.Direction;
 import fr.ubx.poo.game.Position;
+import fr.ubx.poo.game.WorldEntity;
 import fr.ubx.poo.model.Movable;
 import fr.ubx.poo.model.decor.Decor;
+import fr.ubx.poo.model.decor.Princess;
 import fr.ubx.poo.model.go.GameObject;
 import fr.ubx.poo.game.Game;
 
@@ -63,11 +65,18 @@ public class Player extends Character {
         }
     }
 
+    private void checkIfPlayerWin() {
+        if (this.world.get(getPosition()) instanceof Princess) {
+            this.winner = true;
+        }
+    }
+
     public void update(long now) {
         if (moveRequested) {
             if (canMove(direction)) {
                 doMove(direction);
                 removeLifeIfOnMonster();
+                checkIfPlayerWin();
             }
         }
         moveRequested = false;
