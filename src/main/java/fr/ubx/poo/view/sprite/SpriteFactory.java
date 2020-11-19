@@ -8,10 +8,7 @@ import static fr.ubx.poo.view.image.ImageResource.*;
 
 import fr.ubx.poo.game.Position;
 import fr.ubx.poo.model.decor.*;
-import fr.ubx.poo.model.decor.bonus.BombNumberDec;
-import fr.ubx.poo.model.decor.bonus.BombNumberInc;
-import fr.ubx.poo.model.decor.bonus.BombRangeDec;
-import fr.ubx.poo.model.decor.bonus.BombRangeInc;
+import fr.ubx.poo.model.decor.bonus.*;
 import fr.ubx.poo.model.go.character.Monster;
 import fr.ubx.poo.model.go.character.Player;
 import fr.ubx.poo.view.image.ImageFactory;
