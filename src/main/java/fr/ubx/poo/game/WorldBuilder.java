@@ -4,6 +4,8 @@ import fr.ubx.poo.model.decor.Decor;
 import fr.ubx.poo.model.decor.Stone;
 import fr.ubx.poo.model.decor.Tree;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -24,6 +26,10 @@ public class WorldBuilder {
             }
         }
         return builder.grid;
+    }
+
+    public static Map<Position, Decor> build(WorldFileReader worldFileReader) {
+        return WorldBuilder.build(worldFileReader.getEntities(), worldFileReader.getDimension());
     }
 
     private static Decor processEntity(WorldEntity entity) {

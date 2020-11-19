@@ -22,6 +22,12 @@ public class Game {
 
     public Game(String worldPath) {
         world = new WorldStatic();
+
+        WorldFileReader wfr = new WorldFileReader(worldPath);
+        //TODO verify here
+//        world = new World(worldPath);
+//        System.out.println("==============> " + worldPath);
+
         this.worldPath = worldPath;
         loadConfig(worldPath);
         Position positionPlayer = null;
