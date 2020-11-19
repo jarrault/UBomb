@@ -15,7 +15,7 @@ import fr.ubx.poo.game.Game;
 
 public class Player extends Character {
 
-    private final boolean alive = true;
+    private boolean alive = true;
     private boolean moveRequested = false;
     private int lives = 1;
     private boolean winner;
@@ -61,6 +61,8 @@ public class Player extends Character {
         for (Monster monster : this.game.getMonsters()) {
             if (monster.getPosition().equals(getPosition())) {
                 lives--;
+                checkIfPlayerLoose();
+                return;
             }
         }
     }
@@ -68,6 +70,12 @@ public class Player extends Character {
     private void checkIfPlayerWin() {
         if (this.world.get(getPosition()) instanceof Princess) {
             this.winner = true;
+        }
+    }
+
+    private void checkIfPlayerLoose() {
+        if (lives == 0) {
+            this.alive = false;
         }
     }
 
