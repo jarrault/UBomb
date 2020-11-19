@@ -55,10 +55,19 @@ public class Player extends Character {
         setPosition(nextPos);
     }
 
+    private void removeLifeIfOnMonster() {
+        for (Monster monster : this.game.getMonsters()) {
+            if (monster.getPosition().equals(getPosition())) {
+                lives--;
+            }
+        }
+    }
+
     public void update(long now) {
         if (moveRequested) {
             if (canMove(direction)) {
                 doMove(direction);
+                removeLifeIfOnMonster();
             }
         }
         moveRequested = false;

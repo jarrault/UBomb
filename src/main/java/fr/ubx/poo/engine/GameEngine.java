@@ -33,7 +33,8 @@ public final class GameEngine {
     private final Game game;
     private final Player player;
     private final List<Sprite> sprites = new ArrayList<>();
-    private final Monster monster;
+    private final List<Sprite> monsterSprites = new ArrayList<>();
+    private final ArrayList<Monster> monsters;
     private StatusBar statusBar;
     private Pane layer;
     private Input input;
@@ -45,7 +46,7 @@ public final class GameEngine {
         this.windowTitle = windowTitle;
         this.game = game;
         this.player = game.getPlayer();
-        this.monster = game.getMonster();
+        this.monsters = game.getMonsters();
         initialize(stage, game);
         buildAndSetGameLoop();
     }
@@ -72,8 +73,9 @@ public final class GameEngine {
         statusBar = new StatusBar(root, sceneWidth, sceneHeight, game);
         // Create decor sprites
         game.getWorld().forEach( (pos,d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
+        monsters.forEach((monster) -> monsterSprites.add(SpriteFactory.createMonster(layer, monster)));
+
         spritePlayer = SpriteFactory.createPlayer(layer, player);
-        spriteMonster = SpriteFactory.createMonster(layer, monster);
     }
 
     protected final void buildAndSetGameLoop() {
@@ -150,7 +152,7 @@ public final class GameEngine {
         sprites.forEach(Sprite::render);
         // last rendering to have player in the foreground
         spritePlayer.render();
-        spriteMonster.render();
+        monsterSprites.forEach(Sprite::render);
     }
 
     public void start() {

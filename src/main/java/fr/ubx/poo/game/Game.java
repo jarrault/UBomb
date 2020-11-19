@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Properties;
 
 import fr.ubx.poo.model.go.character.Monster;
@@ -18,7 +19,7 @@ public class Game {
 
     private final World world;
     private final Player player;
-    private final Monster monster;
+    private final ArrayList<Monster> monsters = new ArrayList<>();
     private final String worldPath;
     public int initPlayerLives;
 
@@ -28,20 +29,16 @@ public class Game {
         loadConfig(worldPath);
         Position positionPlayer = null;
         try {
-            positionPlayer = world.findCharacter(WorldEntity.Player);
+            positionPlayer = world.findPlayer();
             player = new Player(this, positionPlayer);
         } catch (PositionNotFoundException e) {
             System.err.println("Position not found : " + e.getLocalizedMessage());
             throw new RuntimeException(e);
         }
 
-        Position positionMonster = null;
-        try {
-            positionMonster = world.findCharacter(WorldEntity.Monster);
-            monster = new Monster(this, positionMonster);
-        } catch (PositionNotFoundException e) {
-            System.err.println("Position not found : " + e.getLocalizedMessage());
-            throw new RuntimeException(e);
+        ArrayList<Position> monstersPositions = world.findMonsters();
+        for (Position monsterPosition : monstersPositions) {
+            monsters.add(new Monster(this, monsterPosition));
         }
     }
 
@@ -68,7 +65,7 @@ public class Game {
         return this.player;
     }
 
-    public Monster getMonster() {
-        return this.monster;
+    public ArrayList<Monster> getMonsters() {
+        return monsters;
     }
 }
