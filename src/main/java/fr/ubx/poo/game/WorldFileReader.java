@@ -3,6 +3,10 @@ package fr.ubx.poo.game;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 
 public class WorldFileReader {
 
@@ -32,42 +36,55 @@ public class WorldFileReader {
     }
 
     private void createWorldFromFile() throws IOException {
+        //Variables
         BufferedReader reader = new BufferedReader(new FileReader(this.filepath));
 
         String st = reader.readLine();
         int gridWidth = st.length();//TODO I thing it throws an exception if st is null
-        int gridHeight = Math.toIntExact(reader.lines().count());
-        System.out.println("========> height = " + gridHeight);
-        System.out.println("========> width  = " + gridWidth);
         int line_counter = 0;
 
-        this.entities = new WorldEntity[gridHeight][gridWidth];
-        this.dimension = new Dimension(gridHeight, gridWidth);
+        List<List<WorldEntity>> dynamicMatrix = new ArrayList<>();
 
+        //loop to read the file
         do {
+            //temporary list
+            List<WorldEntity> tmpDynamicMatrix = new ArrayList<>();
+
             //compute one line of the grid
             for (int i = 0; i < gridWidth; i++){
+                //get the actual entity
                 char actualChar = st.charAt(i);
                 WorldEntity entity = WorldEntity.fromCode(actualChar).get();
-                this.entities[line_counter][i] = entity;
-//                System.out.print(this.entities[line_counter][i] + " / ");
-
-//                System.out.print(entity);
+                //add actual entity to dynamicMatrix
+                tmpDynamicMatrix.add(entity);
             }
-            System.out.println(st);
 
+            //TODO throw if size is incoherent
+
+            //to count number of lines
             line_counter++;
+
+            //complete dynamicMatrix
+            dynamicMatrix.add(tmpDynamicMatrix);
 
         } while ( (st = reader.readLine()) != null);
 
-//        System.out.println("gridHeight = " + gridHeight + " | gridWidth = " + gridWidth);
-//        System.out.println("-=-=-=-=-=-");
-//        for(int i = 0; i < gridHeight; i++){
-//            for(int j = 0; j < gridWidth; j++){
-//                System.out.print(this.entities[i][j]);
-//            }
-//            System.out.println();
-//        }
+        //intiate new tab for entities
+        int gridHeight = dynamicMatrix.size();
+        this.entities = new WorldEntity[gridHeight][gridWidth];
+
+        //TODO throw if number of line is incoherent
+
+        //initiate entities
+        for(int i = 0; i < gridHeight; i++){
+            for(int j = 0; j < gridWidth; j++){
+                WorldEntity tmpEntity = dynamicMatrix.get(i).get(j);
+                entities[i][j] = tmpEntity;
+            }
+        }
+
+        //initiate dimension
+        this.dimension = new Dimension(gridHeight, gridWidth);
 
         reader.close();
     }
