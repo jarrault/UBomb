@@ -21,10 +21,7 @@ public class Game {
     public int initPlayerLives;
 
     public Game(String worldPath) {
-//        world = new WorldStatic();
-
-        WorldFileReader wfr = new WorldFileReader(worldPath);
-        world = new World(wfr.getEntities());
+        world = new World(worldPath);
 
         this.worldPath = worldPath;
         loadConfig(worldPath);
