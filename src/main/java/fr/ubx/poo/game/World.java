@@ -8,6 +8,7 @@ import fr.ubx.poo.model.decor.Decor;
 import fr.ubx.poo.model.go.character.Monster;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.function.BiConsumer;
