@@ -6,30 +6,27 @@ package fr.ubx.poo.model.go.character;
 
 import fr.ubx.poo.game.Direction;
 import fr.ubx.poo.game.Position;
+import fr.ubx.poo.game.WorldEntity;
 import fr.ubx.poo.model.Movable;
+import fr.ubx.poo.model.decor.Decor;
+import fr.ubx.poo.model.decor.Princess;
 import fr.ubx.poo.model.go.GameObject;
 import fr.ubx.poo.game.Game;
 
-public class Player extends GameObject implements Movable {
+public class Player extends Character {
 
-    private final boolean alive = true;
-    Direction direction;
+    private boolean alive = true;
     private boolean moveRequested = false;
     private int lives = 1;
     private boolean winner;
 
     public Player(Game game, Position position) {
         super(game, position);
-        this.direction = Direction.S;
         this.lives = game.getInitPlayerLives();
     }
 
     public int getLives() {
         return lives;
-    }
-
-    public Direction getDirection() {
-        return direction;
     }
 
     public void requestMove(Direction direction) {
@@ -41,6 +38,17 @@ public class Player extends GameObject implements Movable {
 
     @Override
     public boolean canMove(Direction direction) {
+        Position nextPos = direction.nextPosition(getPosition());
+
+        if (!this.world.isInside(nextPos)) {
+            return false;
+        }
+
+        Decor decor = this.world.get(nextPos);
+        if (decor != null) {
+            return decor.isTraversable();
+        }
+
         return true;
     }
 
@@ -49,10 +57,34 @@ public class Player extends GameObject implements Movable {
         setPosition(nextPos);
     }
 
+    private void removeLifeIfOnMonster() {
+        for (Monster monster : this.game.getMonsters()) {
+            if (monster.getPosition().equals(getPosition())) {
+                lives--;
+                checkIfPlayerLoose();
+                return;
+            }
+        }
+    }
+
+    private void checkIfPlayerWin() {
+        if (this.world.get(getPosition()) instanceof Princess) {
+            this.winner = true;
+        }
+    }
+
+    private void checkIfPlayerLoose() {
+        if (lives == 0) {
+            this.alive = false;
+        }
+    }
+
     public void update(long now) {
         if (moveRequested) {
             if (canMove(direction)) {
                 doMove(direction);
+                removeLifeIfOnMonster();
+                checkIfPlayerWin();
             }
         }
         moveRequested = false;
