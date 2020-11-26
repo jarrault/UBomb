@@ -8,9 +8,7 @@ import fr.ubx.poo.game.Direction;
 import fr.ubx.poo.game.Position;
 import fr.ubx.poo.game.WorldEntity;
 import fr.ubx.poo.model.Movable;
-import fr.ubx.poo.model.decor.Decor;
-import fr.ubx.poo.model.decor.DoorNextClosed;
-import fr.ubx.poo.model.decor.Princess;
+import fr.ubx.poo.model.decor.*;
 import fr.ubx.poo.model.go.GameObject;
 import fr.ubx.poo.game.Game;
 
@@ -46,12 +44,13 @@ public class Player extends Character {
         Decor decor = this.world.get(myPos);
 
         if(decor instanceof DoorNextClosed) {//TODO verify if there is a better way to check it
-            if ( keys >= 1 ){//only if the player have keys
-                //open the door
-
+            if ( keys >= 1 ){//open the door only if the player have keys
+                this.world.openDoor(myPos);
                 this.keys--;
             }
+//            this.world.openDoor(myPos); // it's to verify if the door correctly open (without checking the keys)
         }
+        //TODO maybe a problem here when open the door, it is called twice ?
 
     }
 
@@ -74,7 +73,17 @@ public class Player extends Character {
     public void doMove(Direction direction) {
         Position nextPos = direction.nextPosition(getPosition());
         setPosition(nextPos);
-        
+
+        //If move to an opened door
+        Decor decor = this.world.get(this.getPosition());
+        if(decor instanceof DoorPrevOpened) {//TODO verify if there is a better way to check it
+            //move to the previous level
+        }
+        if(decor instanceof DoorNextOpened) {//to do verify the checking
+            //move to the next level
+
+            System.out.println("je suis sur la porte");
+        }
     }
 
     private void removeLifeIfOnMonster() {
