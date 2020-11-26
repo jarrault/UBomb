@@ -5,6 +5,7 @@
 package fr.ubx.poo.game;
 
 import fr.ubx.poo.model.decor.Decor;
+import fr.ubx.poo.model.go.character.Monster;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -42,6 +43,20 @@ public class World {
         throw new PositionNotFoundException("Player");
     }
 
+    public ArrayList<Position> findMonsters() {
+        ArrayList<Position> monstersPositions = new ArrayList<>();
+
+        for (int x = 0; x < dimension.width; x++) {
+            for (int y = 0; y < dimension.height; y++) {
+                if (raw[y][x] == WorldEntity.Monster) {
+                    monstersPositions.add(new Position(x, y));
+                }
+            }
+        }
+
+        return monstersPositions;
+    }
+
     public Decor get(Position position) {
         return grid.get(position);
     }
@@ -63,7 +78,7 @@ public class World {
     }
 
     public boolean isInside(Position position) {
-        return true; // to update
+        return position.inside(this.dimension);
     }
 
     public boolean isEmpty(Position position) {
