@@ -6,11 +6,9 @@ package fr.ubx.poo.model.go.character;
 
 import fr.ubx.poo.game.Direction;
 import fr.ubx.poo.game.Position;
-import fr.ubx.poo.game.WorldEntity;
-import fr.ubx.poo.model.Movable;
+import fr.ubx.poo.model.decor.Box;
 import fr.ubx.poo.model.decor.Decor;
 import fr.ubx.poo.model.decor.Princess;
-import fr.ubx.poo.model.go.GameObject;
 import fr.ubx.poo.game.Game;
 
 public class Player extends Character {
@@ -19,6 +17,7 @@ public class Player extends Character {
     private boolean moveRequested = false;
     private int lives = 1;
     private boolean winner;
+    private boolean updateSprites = false;
 
     public Player(Game game, Position position) {
         super(game, position);
@@ -45,9 +44,38 @@ public class Player extends Character {
         }
 
         Decor decor = this.world.get(nextPos);
+
+        if (decor instanceof Box) {
+            return canMoveBox(direction, nextPos, decor);
+        }
+
         if (decor != null) {
             return decor.isTraversable();
         }
+
+        return true;
+    }
+
+    private boolean canMoveBox(Direction direction, Position nextPos, Decor decor) {
+        Position newPosition = direction.nextPosition(nextPos);
+
+        if (!this.world.isInside(newPosition)) {
+            return false;
+        }
+
+        if (this.world.get(newPosition) != null) {
+            return false;
+        }
+
+        for (Monster monster : game.getMonsters()) {
+            if (monster.getPosition().equals(newPosition)) {
+                return false;
+            }
+        }
+
+        world.clear(nextPos);
+        world.set(newPosition, decor);
+        updateSprites = true;
 
         return true;
     }
@@ -98,4 +126,11 @@ public class Player extends Character {
         return alive;
     }
 
+    public boolean isUpdateSprites() {
+        return updateSprites;
+    }
+
+    public void setUpdateSprites(boolean updateSprites) {
+        this.updateSprites = updateSprites;
+    }
 }

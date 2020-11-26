@@ -5,6 +5,7 @@
 package fr.ubx.poo.engine;
 
 import fr.ubx.poo.game.Direction;
+import fr.ubx.poo.game.World;
 import fr.ubx.poo.model.go.character.Monster;
 import fr.ubx.poo.view.sprite.Sprite;
 import fr.ubx.poo.view.sprite.SpriteFactory;
@@ -134,8 +135,18 @@ public final class GameEngine {
         }.start();
     }
 
+    private void updateSprites() {
+        sprites.forEach(Sprite::remove);
+        sprites.clear();
+        game.getWorld().forEach( (pos,d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
+    }
 
     private void update(long now) {
+        if (player.isUpdateSprites()) {
+            updateSprites();
+            player.setUpdateSprites(false);
+        }
+
         player.update(now);
 
         if (!player.isAlive()) {
