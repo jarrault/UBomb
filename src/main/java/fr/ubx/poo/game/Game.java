@@ -10,6 +10,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import fr.ubx.poo.model.go.character.Monster;
@@ -17,17 +18,24 @@ import fr.ubx.poo.model.go.character.Player;
 
 public class Game {
 
-    private final World world;
+    private final List<World> worlds;
+    private int level;
+
     private final Player player;
     private final ArrayList<Monster> monsters = new ArrayList<>();
     private final String worldPath;
     public int initPlayerLives;
+    public String levelFilePrefix; //is it necessary to be public ?
 
     public Game(String worldPath) {
-        world = new World(worldPath);
-
         this.worldPath = worldPath;
         loadConfig(worldPath);
+
+        //to initialise all the world (thanks to WorldFileReader)
+        this.level = 0;//because worlds' list first index is 0
+        this.worlds = initializeWorlds(worldPath);
+        World world = this.getWorld();
+
         Position positionPlayer = null;
         try {
             positionPlayer = world.findPlayer();
@@ -43,6 +51,29 @@ public class Game {
         }
     }
 
+    private List<World> initializeWorlds(String worldPath) {
+        List<World> worldsList = new ArrayList<>();
+
+        File folder = new File(worldPath);
+        int lvl = 1;
+
+        //TODO change var names bellow
+        for (final File fileEntry : folder.listFiles()) {
+            //is it necessary to check if the folder contanis other folder ?
+
+            if (fileEntry.getName().contains(this.levelFilePrefix)) {
+                World world = new World(fileEntry.getPath());
+                world.setLevelNumber(lvl);
+                worldsList.add(world);
+                lvl++;
+            }
+
+//            System.out.println(fileEntry.getPath());
+        }
+
+        return worldsList;
+    }
+
     public int getInitPlayerLives() {
         return initPlayerLives;
     }
@@ -53,13 +84,15 @@ public class Game {
             // load the configuration file
             prop.load(input);
             initPlayerLives = Integer.parseInt(prop.getProperty("lives", "3"));
+            levelFilePrefix = prop.getProperty("prefix", "level");
         } catch (IOException ex) {
             System.err.println("Error loading configuration");
         }
     }
 
     public World getWorld() {
-        return world;
+//        return world;
+        return this.worlds.get(this.level);
     }
 
     public Player getPlayer() {

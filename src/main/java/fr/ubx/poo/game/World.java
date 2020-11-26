@@ -21,28 +21,45 @@ public class World {
     private final WorldEntity[][] raw;
     public final Dimension dimension;
 
+    private int levelNumber;//it could be final ?
+
     public World(WorldEntity[][] raw) {
         this.raw = raw;
         this.dimension = new Dimension(raw.length, raw[0].length);
         this.grid = WorldBuilder.build(raw, dimension);
+
+        this.levelNumber = -1;
     }
 
     public World(String filepath) {
-            WorldFileReader world = new WorldFileReader(filepath);
-            this.raw = world.getEntities();
-            this.dimension = world.getDimension();
-            this.grid = WorldBuilder.build(world);
+        WorldFileReader world = new WorldFileReader(filepath);
+        this.raw = world.getEntities();
+        this.dimension = world.getDimension();
+        this.grid = WorldBuilder.build(world);
+
+        this.levelNumber = -1;
     }
 
     public Position findPlayer() throws PositionNotFoundException {
         for (int x = 0; x < dimension.width; x++) {
             for (int y = 0; y < dimension.height; y++) {
-                if (raw[y][x] == WorldEntity.Player) {
+
+                //TODO do it better ( => not throw PlayerNotFoundExeception when it's not the first level)
+                // because the other level don't contain Player case
+
+                if (raw[y][x] == WorldEntity.Player && this.levelNumber == 1) {
+//                    System.out.println("findPlayer : find player in level 1");
                     return new Position(x, y);
+                } else if ( (raw[y][x] == WorldEntity.Player || raw[y][x] == DoorPrevOpened)
+                        && this.levelNumber > 1){
+//                    System.out.println("findPlayer : find opened door");
+                    return new Position(x,y);
                 }
+
+
             }
         }
-        throw new PositionNotFoundException("Player");
+        throw new PositionNotFoundException("Player (in level " + this.levelNumber + ")");
     }
 
     public ArrayList<Position> findMonsters() {
@@ -94,5 +111,13 @@ public class World {
 
         //set the new door
         this.set(pos, new DoorNextOpened());
+    }
+
+    public int getLevelNumber() {
+        return levelNumber;
+    }
+
+    public void setLevelNumber(int levelNumber) {
+        this.levelNumber = levelNumber;
     }
 }
