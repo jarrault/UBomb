@@ -10,6 +10,7 @@ import fr.ubx.poo.model.decor.Box;
 import fr.ubx.poo.model.decor.Decor;
 import fr.ubx.poo.model.decor.Princess;
 import fr.ubx.poo.game.Game;
+import fr.ubx.poo.model.decor.bonus.*;
 
 public class Player extends Character {
 
@@ -18,6 +19,8 @@ public class Player extends Character {
     private int lives = 1;
     private boolean winner;
     private boolean updateSprites = false;
+    private int numberOfBombs = 1;
+    private int bombsRange = 1;
 
     public Player(Game game, Position position) {
         super(game, position);
@@ -107,12 +110,38 @@ public class Player extends Character {
         }
     }
 
+    private void checkIfContainsBonus() {
+        Decor decor = world.get(getPosition());
+
+        if (decor instanceof Bonus) {
+            world.clear(getPosition());
+            updateSprites = true;
+        }
+
+        if (decor instanceof BombNumberDec && numberOfBombs > 1) {
+            numberOfBombs--;
+        }
+
+        if (decor instanceof BombNumberInc) {
+            numberOfBombs++;
+        }
+
+        if (decor instanceof BombRangeDec && bombsRange > 1) {
+            bombsRange--;
+        }
+
+        if (decor instanceof BombRangeInc) {
+            bombsRange++;
+        }
+    }
+
     public void update(long now) {
         if (moveRequested) {
             if (canMove(direction)) {
                 doMove(direction);
                 removeLifeIfOnMonster();
                 checkIfPlayerWin();
+                checkIfContainsBonus();
             }
         }
         moveRequested = false;
@@ -132,5 +161,13 @@ public class Player extends Character {
 
     public void setUpdateSprites(boolean updateSprites) {
         this.updateSprites = updateSprites;
+    }
+
+    public int getNumberOfBombs() {
+        return numberOfBombs;
+    }
+
+    public int getBombsRange() {
+        return bombsRange;
     }
 }
