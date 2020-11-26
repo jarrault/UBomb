@@ -133,6 +133,10 @@ public class Player extends Character {
         if (decor instanceof BombRangeInc) {
             bombsRange++;
         }
+
+        if (decor instanceof Heart) {
+            lives++;
+        }
     }
 
     public void update(long now) {
