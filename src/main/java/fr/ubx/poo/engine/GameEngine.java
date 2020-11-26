@@ -112,6 +112,10 @@ public final class GameEngine {
         if (input.isMoveUp()) {
             player.requestMove(Direction.N);
         }
+        if (input.isKey()){
+            //when player press ENTER he try to open a door
+            player.requestOpenDoor();
+        }
         input.clear();
     }
 
