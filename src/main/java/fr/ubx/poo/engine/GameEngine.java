@@ -138,8 +138,18 @@ public final class GameEngine {
         }.start();
     }
 
+    private void updateSprites() {
+        sprites.forEach(Sprite::remove);
+        sprites.clear();
+        game.getWorld().forEach( (pos,d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
+    }
 
     private void update(long now) {
+        if (this.game.isLevelChange()) {
+            updateSprites();
+            game.setLevelChange(false);
+        }
+
         player.update(now);
 
         if (!player.isAlive()) {

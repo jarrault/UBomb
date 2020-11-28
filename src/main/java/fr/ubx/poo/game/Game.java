@@ -20,6 +20,7 @@ public class Game {
 
     private final List<World> worlds;
     private int level;
+    private boolean isLevelChange;
 
     private final Player player;
     private final ArrayList<Monster> monsters = new ArrayList<>();
@@ -32,7 +33,8 @@ public class Game {
         loadConfig(worldPath);
 
         //to initialise all the world (thanks to WorldFileReader)
-        this.level = 0;//because worlds' list first index is 0
+        this.level = 1;//because worlds' list first index is 0
+        this.isLevelChange = false;
         this.worlds = initializeWorlds(worldPath);
         World world = this.getWorld();
 
@@ -101,5 +103,25 @@ public class Game {
 
     public ArrayList<Monster> getMonsters() {
         return monsters;
+    }
+
+    public void goPreviousLevel() {
+        this.isLevelChange = true;
+        this.level--;
+        System.out.println("new level : " + this.level);
+    }
+
+    public void goNextLevel() {
+        this.isLevelChange = true;
+        this.level++;
+        System.out.println("new level : " + this.level);
+    }
+
+    public boolean isLevelChange() {
+        return isLevelChange;
+    }
+
+    public void setLevelChange(boolean levelChange) {
+        isLevelChange = levelChange;
     }
 }

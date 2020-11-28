@@ -45,10 +45,10 @@ public class Player extends Character {
 
         if(decor instanceof DoorNextClosed) {//TODO verify if there is a better way to check it
             if ( keys >= 1 ){//open the door only if the player have keys
-                this.world.openDoor(myPos);
+//                this.world.openDoor(myPos);
                 this.keys--;
             }
-//            this.world.openDoor(myPos); // it's to verify if the door correctly open (without checking the keys)
+            this.world.openDoor(myPos); // it's to verify if the door correctly open (without checking the keys)
         }
         //TODO maybe a problem here when open the door, it is called twice ?
 
@@ -78,11 +78,12 @@ public class Player extends Character {
         Decor decor = this.world.get(this.getPosition());
         if(decor instanceof DoorPrevOpened) {//TODO verify if there is a better way to check it
             //move to the previous level
+            this.game.goPreviousLevel();
         }
         if(decor instanceof DoorNextOpened) {//to do verify the checking
             //move to the next level
-
-            System.out.println("je suis sur la porte");
+            this.game.goNextLevel();
+//            System.out.println("je suis sur la porte");
         }
     }
 
