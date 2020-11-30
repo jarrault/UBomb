@@ -33,7 +33,7 @@ public class Game {
         loadConfig(worldPath);
 
         //to initialise all the world (thanks to WorldFileReader)
-        this.level = 1;//because worlds' list first index is 0
+        this.level = 0;//because worlds' list first index is 0
         this.isLevelChange = false;
         this.worlds = initializeWorlds(worldPath);
         World world = this.getWorld();
@@ -70,7 +70,6 @@ public class Game {
                 lvl++;
             }
 
-//            System.out.println(fileEntry.getPath());
         }
 
         return worldsList;
@@ -93,7 +92,6 @@ public class Game {
     }
 
     public World getWorld() {
-//        return world;
         return this.worlds.get(this.level);
     }
 
@@ -108,7 +106,7 @@ public class Game {
     public void goPreviousLevel() {
         this.isLevelChange = true;
         this.level--;
-        System.out.println("new level : " + this.level);
+        System.out.println("prev level : " + this.level);
     }
 
     public void goNextLevel() {
@@ -123,5 +121,26 @@ public class Game {
 
     public void setLevelChange(boolean levelChange) {
         isLevelChange = levelChange;
+    }
+
+    public void updateScene() {
+        World world = this.getWorld();
+
+        Position positionPlayer = null;
+        try { //TODO set player position when go to previous level
+            positionPlayer = world.findPlayer();
+
+            this.player.setPosition(positionPlayer);
+//            player = new Player(this, positionPlayer);
+
+        } catch (PositionNotFoundException e) {
+            System.err.println("Position not found : " + e.getLocalizedMessage());
+            throw new RuntimeException(e);
+        }
+
+        ArrayList<Position> monstersPositions = world.findMonsters();
+        for (Position monsterPosition : monstersPositions) {
+            monsters.add(new Monster(this, monsterPosition));
+        }
     }
 }

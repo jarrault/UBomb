@@ -19,6 +19,7 @@ public class Player extends Character {
     private int lives = 1;
     private int keys = 0;
     private boolean winner;
+    private boolean updateSprites = false;
 
     public Player(Game game, Position position) {
         super(game, position);
@@ -48,6 +49,7 @@ public class Player extends Character {
 //                this.world.openDoor(myPos);
                 this.keys--;
             }
+            this.updateSprites = true;
             this.world.openDoor(myPos); // it's to verify if the door correctly open (without checking the keys)
         }
         //TODO maybe a problem here when open the door, it is called twice ?
@@ -63,9 +65,38 @@ public class Player extends Character {
         }
 
         Decor decor = this.world.get(nextPos);
+
+        if (decor instanceof Box) {
+            return canMoveBox(direction, nextPos, decor);
+        }
+
         if (decor != null) {
             return decor.isTraversable();
         }
+
+        return true;
+    }
+
+    private boolean canMoveBox(Direction direction, Position nextPos, Decor decor) {
+        Position newPosition = direction.nextPosition(nextPos);
+
+        if (!this.world.isInside(newPosition)) {
+            return false;
+        }
+
+        if (this.world.get(newPosition) != null) {
+            return false;
+        }
+
+        for (Monster monster : game.getMonsters()) {
+            if (monster.getPosition().equals(newPosition)) {
+                return false;
+            }
+        }
+
+        world.clear(nextPos);
+        world.set(newPosition, decor);
+        updateSprites = true;
 
         return true;
     }
@@ -117,6 +148,12 @@ public class Player extends Character {
                 checkIfPlayerWin();
             }
         }
+
+        //---------------------------------------------------------------
+        if(this.game.isLevelChange()){
+            this.world = this.game.getWorld();
+        }
+
         moveRequested = false;
     }
 
@@ -128,4 +165,11 @@ public class Player extends Character {
         return alive;
     }
 
+    public boolean isUpdateSprites() {
+        return updateSprites;
+    }
+
+    public void setUpdateSprites(boolean updateSprites) {
+        this.updateSprites = updateSprites;
+    }
 }

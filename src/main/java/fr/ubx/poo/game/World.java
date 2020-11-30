@@ -68,6 +68,7 @@ public class World {
         for (int x = 0; x < dimension.width; x++) {
             for (int y = 0; y < dimension.height; y++) {
                 if (raw[y][x] == WorldEntity.Monster) {
+//                if (raw[x][y] == WorldEntity.Monster) {
                     monstersPositions.add(new Position(x, y));
                 }
             }
@@ -120,4 +121,5 @@ public class World {
     public void setLevelNumber(int levelNumber) {
         this.levelNumber = levelNumber;
     }
+
 }

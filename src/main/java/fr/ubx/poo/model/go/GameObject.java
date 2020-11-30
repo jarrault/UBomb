@@ -14,7 +14,7 @@ import fr.ubx.poo.model.Entity;
  */
 public abstract class GameObject extends Entity {
     protected final Game game;
-    protected final World world;
+    protected /*final*/ World world;
     private Position position;
 
 
