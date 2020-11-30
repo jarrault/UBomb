@@ -163,15 +163,16 @@ public final class GameEngine {
         root.getChildren().add(layer);
         statusBar = new StatusBar(root, sceneWidth, sceneHeight, game);
 
-        // Create decor sprites
-//        game.getWorld().forEach( (pos,d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
+        // Create Monsters sprites
         monsters.forEach((monster) -> monsterSprites.add(SpriteFactory.createMonster(layer, monster)));
 
+        //Create Player sprite
         spritePlayer = SpriteFactory.createPlayer(layer, player);
     }
 
     private void update(long now) {
         if (this.game.isLevelChange()) {
+            monsters.clear();//TODO maybe do it somewhere else
             this.game.setLevelChange(false);
             this.game.updateScene();
             updateScene();
@@ -179,7 +180,6 @@ public final class GameEngine {
         }
 
         if (player.isUpdateSprites()) {
-//            DEBUG_showGrid();
             updateSprites();
             player.setUpdateSprites(false);
         }
