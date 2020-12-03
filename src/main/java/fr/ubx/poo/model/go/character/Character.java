@@ -24,4 +24,6 @@ public abstract class Character extends GameObject implements Movable {
     public Direction getDirection() {
         return direction;
     }
+
+    public abstract void update(long now);
 }

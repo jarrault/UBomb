@@ -167,6 +167,7 @@ public class Player extends Character {
         }
     }
 
+    @Override
     public void update(long now) {
         if (moveRequested) {
             if (canMove(direction)) {
