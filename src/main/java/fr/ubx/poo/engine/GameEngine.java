@@ -187,7 +187,7 @@ public final class GameEngine {
 
         player.update(now);
 
-        monsters.forEach((monster) -> monster.update(now) );
+//        monsters.forEach((monster) -> monster.update(now) );
 
         if (!player.isAlive()) {
             gameLoop.stop();
