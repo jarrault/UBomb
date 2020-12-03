@@ -20,7 +20,7 @@ public class Player extends Character {
 
     private boolean alive = true;
     private boolean moveRequested = false;
-    private int lives = 1;
+
     private int keys = 0;
     private boolean winner;
     private boolean updateSprites = false;

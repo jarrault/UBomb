@@ -47,6 +47,14 @@ public class Monster extends Character {
 
         if(canMove(dir)){
             doMove(dir);
+
+            checkIfInflictDamageToPlayer();
+        }
+    }
+
+    private void checkIfInflictDamageToPlayer() {
+        if(this.game.getPlayer().getPosition().equals(this.getPosition())){
+            this.game.inflictDamageToPlayer(1);
         }
     }
 }

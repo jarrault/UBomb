@@ -9,6 +9,7 @@ import fr.ubx.poo.model.go.GameObject;
 public abstract class Character extends GameObject implements Movable {
 
     Direction direction;
+    protected int lives = 1;
 
     public Character(Game game, Position position) {
         super(game, position);
@@ -26,4 +27,8 @@ public abstract class Character extends GameObject implements Movable {
     }
 
     public abstract void update(long now);
+
+    public void inflictDamage(int damage){
+        this.lives -= 1;
+    }
 }
