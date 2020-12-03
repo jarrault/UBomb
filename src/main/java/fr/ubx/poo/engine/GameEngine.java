@@ -5,6 +5,7 @@
 package fr.ubx.poo.engine;
 
 import fr.ubx.poo.game.Direction;
+import fr.ubx.poo.game.PositionNotFoundException;
 import fr.ubx.poo.game.World;
 import fr.ubx.poo.model.go.character.Monster;
 import fr.ubx.poo.view.sprite.Sprite;
@@ -41,7 +42,7 @@ public final class GameEngine {
     private Input input;
     private Stage stage;
     private Sprite spritePlayer;
-    private Sprite spriteMonster;
+//    private Sprite spriteMonster;
 
     public GameEngine(final String windowTitle, Game game, final Stage stage) {
         this.windowTitle = windowTitle;
@@ -73,7 +74,7 @@ public final class GameEngine {
         root.getChildren().add(layer);
         statusBar = new StatusBar(root, sceneWidth, sceneHeight, game);
         // Create decor sprites
-        game.getWorld().forEach( (pos,d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
+        game.getWorld().forEach((pos, d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
         monsters.forEach((monster) -> monsterSprites.add(SpriteFactory.createMonster(layer, monster)));
 
         spritePlayer = SpriteFactory.createPlayer(layer, player);
@@ -113,6 +114,10 @@ public final class GameEngine {
         if (input.isMoveUp()) {
             player.requestMove(Direction.N);
         }
+        if (input.isKey()) {
+            //when player press ENTER he try to open a door
+            player.requestOpenDoor();
+        }
         input.clear();
     }
 
@@ -138,10 +143,43 @@ public final class GameEngine {
     private void updateSprites() {
         sprites.forEach(Sprite::remove);
         sprites.clear();
-        game.getWorld().forEach( (pos,d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
+        game.getWorld().forEach((pos, d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
+    }
+
+    private void updateScene() {
+        Group root = new Group();
+        layer = new Pane();
+
+        int height = game.getWorld().dimension.height;
+        int width = game.getWorld().dimension.width;
+        int sceneWidth = width * Sprite.size;
+        int sceneHeight = height * Sprite.size;
+
+        Scene scene = new Scene(root, sceneWidth, sceneHeight + StatusBar.height);
+        scene.getStylesheets().add(getClass().getResource("/css/application.css").toExternalForm());
+
+        stage.setScene(scene);
+
+        input = new Input(scene);
+        root.getChildren().add(layer);
+        statusBar = new StatusBar(root, sceneWidth, sceneHeight, game);
+
+        // Create Monsters sprites
+        monsters.forEach((monster) -> monsterSprites.add(SpriteFactory.createMonster(layer, monster)));
+
+        //Create Player sprite
+        spritePlayer = SpriteFactory.createPlayer(layer, player);
     }
 
     private void update(long now) {
+        if (this.game.isLevelChange()) {
+            monsters.clear();//TODO maybe do it somewhere else
+            this.game.setLevelChange(false);
+            this.game.updateScene();
+            updateScene();
+            updateSprites();
+        }
+
         if (player.isUpdateSprites()) {
             updateSprites();
             player.setUpdateSprites(false);
