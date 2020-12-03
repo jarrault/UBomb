@@ -22,6 +22,7 @@ public class World {
     public final Dimension dimension;
 
     private int levelNumber;//it could be final ?
+    private boolean comeFromNextLevel;
 
     public World(WorldEntity[][] raw) {
         this.raw = raw;
@@ -29,6 +30,7 @@ public class World {
         this.grid = WorldBuilder.build(raw, dimension);
 
         this.levelNumber = -1;
+        this.comeFromNextLevel = false;
     }
 
     public World(String filepath) {
@@ -38,29 +40,52 @@ public class World {
         this.grid = WorldBuilder.build(world);
 
         this.levelNumber = -1;
+        this.comeFromNextLevel = false;
     }
 
     public Position findPlayer() throws PositionNotFoundException {
+//        debug_showGrid();
+
         for (int x = 0; x < dimension.width; x++) {
             for (int y = 0; y < dimension.height; y++) {
 
                 //TODO do it better ( => not throw PlayerNotFoundExeception when it's not the first level)
                 // because the other level don't contain Player case
 
-                if (raw[y][x] == WorldEntity.Player && this.levelNumber == 1) {
-//                    System.out.println("findPlayer : find player in level 1");
-                    return new Position(x, y);
-                } else if ( (raw[y][x] == WorldEntity.Player || raw[y][x] == DoorPrevOpened)
-                        && this.levelNumber > 1){
-//                    System.out.println("findPlayer : find opened door");
-                    return new Position(x,y);
-                }
+                if(this.comeFromNextLevel) {
+                    if (raw[y][x] == DoorNextClosed) {
+                        this.comeFromNextLevel = false;
+                        return new Position(x,y);
+                    }
+                } else {
 
+                    if (raw[y][x] == WorldEntity.Player && this.levelNumber == 1) {
+//                    System.out.println("findPlayer : find player in level 1");
+                        return new Position(x, y);
+                    } else if ((raw[y][x] == WorldEntity.Player || raw[y][x] == DoorPrevOpened)
+                            && this.levelNumber > 1) {
+//                    System.out.println("findPlayer : find opened door");
+                        return new Position(x, y);
+                    }
+
+
+                }
 
             }
         }
         throw new PositionNotFoundException("Player (in level " + this.levelNumber + ")");
     }
+
+    private void debug_showGrid() {
+        for (int x = 0; x < dimension.height; x++) {
+            for (int y = 0; y < dimension.width; y++) {
+                System.out.print(raw[x][y]);
+            }
+            System.out.println();
+        }
+
+    }
+
 
     public ArrayList<Position> findMonsters() {
         ArrayList<Position> monstersPositions = new ArrayList<>();
@@ -122,4 +147,7 @@ public class World {
         this.levelNumber = levelNumber;
     }
 
+    public void comeFromNextLevel() {
+        this.comeFromNextLevel = true;
+    }
 }

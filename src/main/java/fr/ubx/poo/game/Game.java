@@ -106,6 +106,7 @@ public class Game {
     public void goPreviousLevel() {
         this.isLevelChange = true;
         this.level--;
+        this.getWorld().comeFromNextLevel();
         System.out.println("prev level : " + this.level);
     }
 
