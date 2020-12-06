@@ -148,5 +148,7 @@ public class Game {
     public void inflictDamageToPlayer(int damage) { //TODO I'm not sure it's a good way to do it
         this.getPlayer().inflictDamage(damage);
         this.getPlayer().update(0);
+
+
     }
 }
