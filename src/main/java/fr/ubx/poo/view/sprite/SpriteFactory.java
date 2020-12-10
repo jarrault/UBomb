@@ -45,7 +45,8 @@ public final class SpriteFactory {
             return new SpriteDecor(layer, factory.get(DOOR_OPENED), position);
         if (decor instanceof Princess)
             return new SpriteDecor(layer, factory.get(PRINCESS), position);
-        return null;
+        //return null;
+        throw new RuntimeException("Unsuported sprite for decor " + decor);
     }
 
     public static Sprite createPlayer(Pane layer, Player player) {
