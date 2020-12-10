@@ -229,5 +229,8 @@ public class Player extends Character {
     public int getBombsRange() {
         return bombsRange;
     }
-  
+
+    public int getKeys() {
+        return keys;
+    }
 }
