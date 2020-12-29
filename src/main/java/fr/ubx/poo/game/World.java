@@ -4,16 +4,13 @@
 
 package fr.ubx.poo.game;
 
+import fr.ubx.poo.model.go.Bomb;
 import fr.ubx.poo.model.decor.Decor;
-import fr.ubx.poo.model.go.character.Monster;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.function.BiConsumer;
-
-import static fr.ubx.poo.game.WorldEntity.*;
 
 public class World {
     private final Map<Position, Decor> grid;

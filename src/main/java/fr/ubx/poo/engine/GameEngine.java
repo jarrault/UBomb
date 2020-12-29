@@ -5,9 +5,10 @@
 package fr.ubx.poo.engine;
 
 import fr.ubx.poo.game.Direction;
-import fr.ubx.poo.game.World;
+import fr.ubx.poo.model.go.Bomb;
 import fr.ubx.poo.model.go.character.Monster;
 import fr.ubx.poo.view.sprite.Sprite;
+import fr.ubx.poo.view.sprite.SpriteBomb;
 import fr.ubx.poo.view.sprite.SpriteFactory;
 import fr.ubx.poo.game.Game;
 import fr.ubx.poo.model.go.character.Player;
@@ -23,8 +24,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 public final class GameEngine {
@@ -34,14 +34,14 @@ public final class GameEngine {
     private final Game game;
     private final Player player;
     private final List<Sprite> sprites = new ArrayList<>();
-    private final List<Sprite> monsterSprites = new ArrayList<>();
+    private final List<Sprite> spriteMonsters = new ArrayList<>();
+    private final List<Sprite> spriteBombs = new ArrayList<>();
     private final ArrayList<Monster> monsters;
     private StatusBar statusBar;
     private Pane layer;
     private Input input;
     private Stage stage;
     private Sprite spritePlayer;
-    private Sprite spriteMonster;
 
     public GameEngine(final String windowTitle, Game game, final Stage stage) {
         this.windowTitle = windowTitle;
@@ -74,7 +74,7 @@ public final class GameEngine {
         statusBar = new StatusBar(root, sceneWidth, sceneHeight, game);
         // Create decor sprites
         game.getWorld().forEach( (pos,d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
-        monsters.forEach((monster) -> monsterSprites.add(SpriteFactory.createMonster(layer, monster)));
+        monsters.forEach((monster) -> spriteMonsters.add(SpriteFactory.createMonster(layer, monster)));
 
         spritePlayer = SpriteFactory.createPlayer(layer, player);
     }
@@ -112,6 +112,9 @@ public final class GameEngine {
         }
         if (input.isMoveUp()) {
             player.requestMove(Direction.N);
+        }
+        if (input.isBomb()) {
+            spriteBombs.add(SpriteFactory.createBomb(layer, new Bomb(game, player.getPosition())));
         }
         input.clear();
     }
@@ -161,9 +164,10 @@ public final class GameEngine {
 
     private void render() {
         sprites.forEach(Sprite::render);
+        spriteMonsters.forEach(Sprite::render);
+        spriteBombs.forEach(Sprite::render);
         // last rendering to have player in the foreground
         spritePlayer.render();
-        monsterSprites.forEach(Sprite::render);
     }
 
     public void start() {

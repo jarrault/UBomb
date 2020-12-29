@@ -6,25 +6,31 @@ package fr.ubx.poo.model.go.character;
 
 import fr.ubx.poo.game.Direction;
 import fr.ubx.poo.game.Position;
+import fr.ubx.poo.model.go.Bomb;
 import fr.ubx.poo.model.decor.Box;
 import fr.ubx.poo.model.decor.Decor;
 import fr.ubx.poo.model.decor.Princess;
 import fr.ubx.poo.game.Game;
 import fr.ubx.poo.model.decor.bonus.*;
 
+import java.util.ArrayList;
+
 public class Player extends Character {
 
     private boolean alive = true;
     private boolean moveRequested = false;
+    private boolean bombRequested = false;
     private int lives = 1;
     private boolean winner;
     private boolean updateSprites = false;
     private int numberOfBombs = 1;
     private int bombsRange = 1;
+    private ArrayList<Bomb> bombs;
 
     public Player(Game game, Position position) {
         super(game, position);
         this.lives = game.getInitPlayerLives();
+        this.bombs = new ArrayList<>();
     }
 
     public int getLives() {
@@ -151,6 +157,28 @@ public class Player extends Character {
         moveRequested = false;
     }
 
+    public boolean canPutBomb() {
+        for (Bomb bomb : bombs) {
+            if (bomb.getPosition().equals(getPosition())) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /*
+    public Bomb putBomb(long now) {
+        if (!canPutBomb()) {
+            return null;
+        }
+
+        Bomb bomb = new Bomb(game, getPosition(), now);
+        bombs.add(bomb);
+        updateSprites = true;
+        return bomb;
+    }*/
+
     public boolean isWinner() {
         return winner;
     }
@@ -173,5 +201,9 @@ public class Player extends Character {
 
     public int getBombsRange() {
         return bombsRange;
+    }
+
+    public ArrayList<Bomb> getBombs() {
+        return bombs;
     }
 }
