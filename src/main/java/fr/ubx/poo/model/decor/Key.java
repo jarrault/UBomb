@@ -5,4 +5,7 @@ public class Key extends Decor {
     public String toString() {
         return "Key";
     }
+
+    @Override
+    public boolean isDestructible() { return true; }
 }

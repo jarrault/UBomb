@@ -10,4 +10,7 @@ public class Box extends Decor {
     public boolean isTraversable() {
         return false;
     }
+
+    @Override
+    public boolean isDestructible() { return true; }
 }
