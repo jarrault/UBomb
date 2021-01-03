@@ -45,6 +45,13 @@ public class Player extends Character {
         moveRequested = true;
     }
 
+    public void requestBomb() {
+//        if (this.game.getWorld().get(getPosition()) instanceof Bomb) { //dont work but it's an idea like that
+//            this.direction = direction;
+//        }
+        bombRequested = true;
+    }
+
     @Override
     public boolean canMove(Direction direction) {
         Position nextPos = direction.nextPosition(getPosition());
@@ -88,6 +95,32 @@ public class Player extends Character {
         updateSprites = true;
 
         return true;
+    }
+
+    public boolean canPutBomb() {
+        if(this.numberOfBombs == 0){
+            return false;
+        }
+
+        for (Bomb bomb : bombs) {
+            if (bomb.getPosition().equals(getPosition())) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public Bomb doPutBomb(long now) {
+        if (!canPutBomb()) {
+            return null;
+        }
+
+        Bomb bomb = new Bomb(game, getPosition() /*, now*/);
+        this.numberOfBombs--;
+        bombs.add(bomb);
+        updateSprites = true;
+        return bomb;
     }
 
     public void doMove(Direction direction) {
@@ -155,30 +188,16 @@ public class Player extends Character {
                 checkIfContainsBonus();
             }
         }
-        moveRequested = false;
-    }
 
-    public boolean canPutBomb() {
-        for (Bomb bomb : bombs) {
-            if (bomb.getPosition().equals(getPosition())) {
-                return false;
+        if (bombRequested){
+            if(canPutBomb()){
+                doPutBomb(now);
             }
         }
 
-        return true;
+        bombRequested = false;
+        moveRequested = false;
     }
-
-    /*
-    public Bomb putBomb(long now) {
-        if (!canPutBomb()) {
-            return null;
-        }
-
-        Bomb bomb = new Bomb(game, getPosition(), now);
-        bombs.add(bomb);
-        updateSprites = true;
-        return bomb;
-    }*/
 
     public void addBomb(Bomb bomb){
         this.bombs.add(bomb);

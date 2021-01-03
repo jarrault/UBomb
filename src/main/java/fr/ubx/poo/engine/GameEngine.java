@@ -114,12 +114,14 @@ public final class GameEngine {
             player.requestMove(Direction.N);
         }
         if (input.isBomb()) {
-            Bomb bomb = new Bomb(game, player.getPosition());
+//            Bomb bomb = new Bomb(game, player.getPosition());
 //            this.game.getWorld().addGameObject(bomb);
             // problem here because bomb is not in the grid // BUT IT MAYBE NOT NECESSARY
 
-            this.player.addBomb(bomb);
-            spriteBombs.add(SpriteFactory.createBomb(layer, bomb));
+//            this.player.addBomb(bomb);
+//            spriteBombs.add(SpriteFactory.createBomb(layer, bomb));
+
+            this.player.requestBomb();
         }
         input.clear();
     }
@@ -171,9 +173,10 @@ public final class GameEngine {
     }
 
     /**
-     * To update bomb's lists and sprites
-     * BUT it doesn't work and i dont understand why
-     *      it seems spritesBombs could be empty and still got a bomb's sprite and i dont know how it possible
+     * To create sprite and/or to update bomb's lists and sprites
+     * <p>
+     * for update sprite BUT it doesn't work and i dont understand why
+     * it seems spritesBombs could be empty and still got a bomb's sprite and i dont know how it possible
      */
     private void updateBombs() {
 //        if(!this.spriteBombs.isEmpty()) { //i dont know which one is the best | it'is in order to not do the loop each frame
@@ -185,6 +188,8 @@ public final class GameEngine {
 
             while (bombIterator.hasNext()) {
                 Bomb bomb = bombIterator.next();
+
+                //to update bomb's list and sprites
                 if (bomb.isExplode()) {
                     this.spriteBombs.clear();//TODO change that
 
@@ -193,6 +198,10 @@ public final class GameEngine {
                     newBombs.remove(bomb);
 
                     updateSprites();
+
+                } else {//to create sprites
+//                    this.player.addBomb(bomb);
+                    spriteBombs.add(SpriteFactory.createBomb(layer, bomb));
                 }
             }
 
