@@ -73,7 +73,7 @@ public final class GameEngine {
         root.getChildren().add(layer);
         statusBar = new StatusBar(root, sceneWidth, sceneHeight, game);
         // Create decor sprites
-        game.getWorld().forEach( (pos,d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
+        game.getWorld().forEach((pos, d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
         monsters.forEach((monster) -> spriteMonsters.add(SpriteFactory.createMonster(layer, monster)));
 
         spritePlayer = SpriteFactory.createPlayer(layer, player);
@@ -114,7 +114,12 @@ public final class GameEngine {
             player.requestMove(Direction.N);
         }
         if (input.isBomb()) {
-            spriteBombs.add(SpriteFactory.createBomb(layer, new Bomb(game, player.getPosition())));
+            Bomb bomb = new Bomb(game, player.getPosition());
+//            this.game.getWorld().addGameObject(bomb);
+            // problem here because bomb is not in the grid // BUT IT MAYBE NOT NECESSARY
+
+            this.player.addBomb(bomb);
+            spriteBombs.add(SpriteFactory.createBomb(layer, bomb));
         }
         input.clear();
     }
@@ -141,10 +146,11 @@ public final class GameEngine {
     private void updateSprites() {
         sprites.forEach(Sprite::remove);
         sprites.clear();
-        game.getWorld().forEach( (pos,d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
+        game.getWorld().forEach((pos, d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
     }
 
     private void update(long now) {
+        //TODO is it a good idea to factorise all player update of this method ?
         if (player.isUpdateSprites()) {
             updateSprites();
             player.setUpdateSprites(false);
@@ -159,6 +165,39 @@ public final class GameEngine {
         if (player.isWinner()) {
             gameLoop.stop();
             showMessage("Gagné", Color.BLUE);
+        }
+
+        updateBombs();
+    }
+
+    /**
+     * To update bomb's lists and sprites
+     * BUT it doesn't work and i dont understand why
+     *      it seems spritesBombs could be empty and still got a bomb's sprite and i dont know how it possible
+     */
+    private void updateBombs() {
+//        if(!this.spriteBombs.isEmpty()) { //i dont know which one is the best | it'is in order to not do the loop each frame
+        if (!this.player.getBombs().isEmpty()) {
+
+            Iterator<Bomb> bombIterator = this.player.getBombs().iterator();
+//            List<Bomb> newBombs = new ArrayList<>();
+            List<Bomb> newBombs = this.player.getBombs();
+
+            while (bombIterator.hasNext()) {
+                Bomb bomb = bombIterator.next();
+                if (bomb.isExplode()) {
+                    this.spriteBombs.clear();//TODO change that
+
+                    bombIterator.remove();
+//                    newBombs.add(bomb);
+                    newBombs.remove(bomb);
+
+                    updateSprites();
+                }
+            }
+
+            this.player.setBombs(newBombs);
+
         }
     }
 

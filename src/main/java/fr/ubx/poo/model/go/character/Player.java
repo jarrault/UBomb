@@ -14,6 +14,7 @@ import fr.ubx.poo.game.Game;
 import fr.ubx.poo.model.decor.bonus.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Player extends Character {
 
@@ -25,7 +26,7 @@ public class Player extends Character {
     private boolean updateSprites = false;
     private int numberOfBombs = 1;
     private int bombsRange = 1;
-    private ArrayList<Bomb> bombs;
+    private List<Bomb> bombs;
 
     public Player(Game game, Position position) {
         super(game, position);
@@ -179,6 +180,14 @@ public class Player extends Character {
         return bomb;
     }*/
 
+    public void addBomb(Bomb bomb){
+        this.bombs.add(bomb);
+    }
+
+    public void removeBomb(Bomb bomb){
+        this.bombs.remove(bomb);
+    }
+
     public boolean isWinner() {
         return winner;
     }
@@ -195,6 +204,10 @@ public class Player extends Character {
         this.updateSprites = updateSprites;
     }
 
+    public void setBombs(List<Bomb> bomb){
+        this.bombs = bomb;
+    }
+
     public int getNumberOfBombs() {
         return numberOfBombs;
     }
@@ -203,7 +216,7 @@ public class Player extends Character {
         return bombsRange;
     }
 
-    public ArrayList<Bomb> getBombs() {
+    public List<Bomb> getBombs() {
         return bombs;
     }
 }

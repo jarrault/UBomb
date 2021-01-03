@@ -55,7 +55,9 @@ public class Bomb extends GameObject {
         }
 
         this.isExplode = true;
-//        System.out.println("bomb explode");
+        System.out.println("bomb explode");
+
+//        this.game.getPlayer().removeBomb(this);
     }
 
     private void checkExplosionDirection(Direction direction) {
