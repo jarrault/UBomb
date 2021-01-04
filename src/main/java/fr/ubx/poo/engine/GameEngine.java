@@ -163,19 +163,23 @@ public final class GameEngine {
             showMessage("Gagné", Color.BLUE);
         }
 
-        updateBombs();
+        updateBombs(now);
     }
 
     /**
      * updateBombs loop over all the bombs and update it's states.
      * 1. Add the sprite of a bomb on the layer if a bomb is posed
      * 2. Remove the sprite of the bomb from the layer if it as explode
+
+     * @param now //TODO
      */
-    private void updateBombs() {
+    private void updateBombs(long now) {
         Iterator<Bomb> bombIterator = this.player.getBombs().iterator();
 
         while (bombIterator.hasNext()) {
             Bomb bomb = bombIterator.next();
+
+            bomb.update(now);
 
             if (!bomb.isDisplayed()) {
                 spriteBombs.add(SpriteFactory.createBomb(layer, bomb));
