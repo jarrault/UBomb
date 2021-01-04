@@ -16,11 +16,13 @@ public class Bomb extends GameObject {
     private int countdown = 0;
     private int bombRange;
     private boolean isExplode;
+    private boolean isDisplayed;
 
     public Bomb(Game game, Position position) {
         super(game, position);
         this.bombRange = 1;
         this.isExplode = false;
+        this.isDisplayed = false;
         launchTask();
     }
 
@@ -89,5 +91,13 @@ public class Bomb extends GameObject {
 
     public boolean isExplode() {
         return isExplode;
+    }
+
+    public boolean isDisplayed() {
+        return isDisplayed;
+    }
+
+    public void setDisplayed(boolean displayed) {
+        isDisplayed = displayed;
     }
 }

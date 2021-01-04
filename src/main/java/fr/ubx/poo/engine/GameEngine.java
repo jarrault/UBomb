@@ -35,7 +35,7 @@ public final class GameEngine {
     private final Player player;
     private final List<Sprite> sprites = new ArrayList<>();
     private final List<Sprite> spriteMonsters = new ArrayList<>();
-    private final List<Sprite> spriteBombs = new ArrayList<>();
+    private final List<SpriteBomb> spriteBombs = new ArrayList<>();
     private final ArrayList<Monster> monsters;
     private StatusBar statusBar;
     private Pane layer;
@@ -114,15 +114,9 @@ public final class GameEngine {
             player.requestMove(Direction.N);
         }
         if (input.isBomb()) {
-//            Bomb bomb = new Bomb(game, player.getPosition());
-//            this.game.getWorld().addGameObject(bomb);
-            // problem here because bomb is not in the grid // BUT IT MAYBE NOT NECESSARY
-
-//            this.player.addBomb(bomb);
-//            spriteBombs.add(SpriteFactory.createBomb(layer, bomb));
-
             this.player.requestBomb();
         }
+
         input.clear();
     }
 
@@ -173,40 +167,31 @@ public final class GameEngine {
     }
 
     /**
-     * To create sprite and/or to update bomb's lists and sprites
-     * <p>
-     * for update sprite BUT it doesn't work and i dont understand why
-     * it seems spritesBombs could be empty and still got a bomb's sprite and i dont know how it possible
+     * updateBombs loop over all the bombs and update it's states.
+     * 1. Add the sprite of a bomb on the layer if a bomb is posed
+     * 2. Remove the sprite of the bomb from the layer if it as explode
      */
     private void updateBombs() {
-//        if(!this.spriteBombs.isEmpty()) { //i dont know which one is the best | it'is in order to not do the loop each frame
-        if (!this.player.getBombs().isEmpty()) {
+        Iterator<Bomb> bombIterator = this.player.getBombs().iterator();
 
-            Iterator<Bomb> bombIterator = this.player.getBombs().iterator();
-//            List<Bomb> newBombs = new ArrayList<>();
-            List<Bomb> newBombs = this.player.getBombs();
+        while (bombIterator.hasNext()) {
+            Bomb bomb = bombIterator.next();
 
-            while (bombIterator.hasNext()) {
-                Bomb bomb = bombIterator.next();
-
-                //to update bomb's list and sprites
-                if (bomb.isExplode()) {
-                    this.spriteBombs.clear();//TODO change that
-
-                    bombIterator.remove();
-//                    newBombs.add(bomb);
-                    newBombs.remove(bomb);
-
-                    updateSprites();
-
-                } else {//to create sprites
-//                    this.player.addBomb(bomb);
-                    spriteBombs.add(SpriteFactory.createBomb(layer, bomb));
-                }
+            if (!bomb.isDisplayed()) {
+                spriteBombs.add(SpriteFactory.createBomb(layer, bomb));
+                bomb.setDisplayed(true);
             }
 
-            this.player.setBombs(newBombs);
+            if (bomb.isExplode()) {
+                bombIterator.remove();
 
+                // Get the sprite that match with the bomb that explode
+                Optional<SpriteBomb> bombSprite = spriteBombs.stream().filter(b -> b.getGo().equals(bomb)).findFirst();
+
+                // Remove the sprite from the layer and remove it from the Sprites list
+                bombSprite.ifPresent(Sprite::remove);
+                bombSprite.ifPresent(spriteBombs::remove);
+            }
         }
     }
 
