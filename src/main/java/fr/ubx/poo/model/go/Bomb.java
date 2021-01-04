@@ -27,6 +27,14 @@ public class Bomb extends GameObject {
         launchTask();
     }
 
+    public Bomb(Game game, Position position, int bombRange) {
+        super(game, position);
+        this.bombRange = bombRange;
+        this.isExplode = false;
+        this.isDisplayed = false;
+        launchTask();
+    }
+
     private void launchTask() {
         Timer timer = new Timer("Timer");
         long period = 1000L;
