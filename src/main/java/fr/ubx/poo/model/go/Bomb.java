@@ -5,6 +5,7 @@ import fr.ubx.poo.game.Game;
 import fr.ubx.poo.game.Position;
 import fr.ubx.poo.model.decor.Box;
 import fr.ubx.poo.model.decor.Decor;
+import fr.ubx.poo.model.decor.bonus.Bonus;
 
 import java.util.Date;
 import java.util.Timer;
@@ -65,7 +66,7 @@ public class Bomb extends GameObject {
     private void checkExplosionDirection(Direction direction) {
         System.out.println(direction);
         Position pos = getPosition();
-        boolean boxAlreadyDestroy = false;
+        boolean objectAlreadyDestroy = false;
 
         for(int range=1; range <= this.bombRange; range++){
             pos = direction.nextPosition(pos);
@@ -75,9 +76,20 @@ public class Bomb extends GameObject {
                 Decor decor = this.world.get(pos);
                 System.out.println("    -->> " + decor);
 
-                //TODO switch for process to do when explosion
+                //TODO need to find a solution to instanceof check for Decor
+                if(decor != null) {
+                    if (decor.isDestructible() && !objectAlreadyDestroy) {
+                        if (!decor.isTraversable()) { //it wwork for Box and other decor which "stop" explosion ?
+                            objectAlreadyDestroy = true;
+                        }
 
-                //need to find a solution to instanceof check for Decor
+                        //TODO I think it's here to begin Explosion Object creation
+                        //under, some decor don't have to be destroyed (ex: key), but we can "check" it in overrided method in Key I think
+                        //decor.destroy(); //TODO
+                        System.out.println("    \\_ destroy");
+                    }
+                }
+                //that's all ?
 
             }
 
