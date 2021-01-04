@@ -142,28 +142,10 @@ public class Player extends Character {
         Decor decor = world.get(getPosition());
 
         if (decor instanceof Bonus) {
+            ((Bonus) decor).doAction(this);
+
             world.clear(getPosition());
             updateSprites = true;
-        }
-
-        if (decor instanceof BombNumberDec && numberOfBombs > 1) {
-            numberOfBombs--;
-        }
-
-        if (decor instanceof BombNumberInc) {
-            numberOfBombs++;
-        }
-
-        if (decor instanceof BombRangeDec && bombsRange > 1) {
-            bombsRange--;
-        }
-
-        if (decor instanceof BombRangeInc) {
-            bombsRange++;
-        }
-
-        if (decor instanceof Heart) {
-            lives++;
         }
     }
 
@@ -226,11 +208,23 @@ public class Player extends Character {
         return numberOfBombs;
     }
 
+    public void setNumberOfBombs(int numberOfBombs) {
+        this.numberOfBombs = numberOfBombs;
+    }
+
     public int getBombsRange() {
         return bombsRange;
     }
 
     public int getKeys() {
         return keys;
+    }
+
+    public void setBombsRange(int bombsRange) {
+        this.bombsRange = bombsRange;
+    }
+
+    public void setLives(int lives) {
+        this.lives = lives;
     }
 }
