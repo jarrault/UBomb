@@ -6,6 +6,4 @@ public class Key extends Decor {
         return "Key";
     }
 
-    @Override
-    public boolean isDestructible() { return true; }
 }

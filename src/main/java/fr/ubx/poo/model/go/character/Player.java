@@ -25,7 +25,8 @@ public class Player extends Character {
     private boolean winner;
     private boolean updateSprites = false;
     private int numberOfBombs = 2;
-    private int bombsRange = 1;
+//    private int bombsRange = 1;
+    private int bombsRange = 3;
     private List<Bomb> bombs;
 
     public Player(Game game, Position position) {

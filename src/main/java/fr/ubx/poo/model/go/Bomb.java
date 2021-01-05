@@ -121,7 +121,7 @@ public class Bomb extends GameObject {
     private void checkExplosionDirection(Direction direction) {
         System.out.println(direction);
         Position pos = getPosition();
-        boolean objectAlreadyDestroy = false;
+        boolean isExplosionObstacled = false;
 
         for (int range = 1; range <= this.bombRange; range++) {
             pos = direction.nextPosition(pos);
@@ -133,9 +133,10 @@ public class Bomb extends GameObject {
 
                 //TODO need to find a solution to instanceof check for Decor
                 if (decor != null) {
-                    if (decor.isDestructible() && !objectAlreadyDestroy) {
-                        if (!decor.isTraversable()) { //it wwork for Box and other decor which "stop" explosion ?
-                            objectAlreadyDestroy = true;
+                    System.out.println("    \\->> " + decor.isDestructible());
+                    if (decor.isDestructible() && !isExplosionObstacled) {
+                        if (!decor.isTraversable()) { //it work for Box and other decor which "stop" explosion ?
+                            isExplosionObstacled = true;
                         }
 
                         //TODO I think it's here to begin Explosion Object creation
@@ -145,6 +146,8 @@ public class Bomb extends GameObject {
                         this.world.clear(pos);
 
                         System.out.println("    \\_ destroy");
+                    } else if(!decor.isDestructible()){
+                        isExplosionObstacled = true;
                     }
                 }
                 //that's all  //TODO it miss player and monsters explosion logic
