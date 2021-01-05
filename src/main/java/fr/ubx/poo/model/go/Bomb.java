@@ -4,7 +4,6 @@ import fr.ubx.poo.game.Direction;
 import fr.ubx.poo.game.Game;
 import fr.ubx.poo.game.Position;
 import fr.ubx.poo.model.decor.Decor;
-import fr.ubx.poo.model.decor.Explosion;
 import fr.ubx.poo.model.go.character.Monster;
 import javafx.geometry.Pos;
 
@@ -23,22 +22,6 @@ public class Bomb extends GameObject {
     private boolean isDisplayed;
     private long creationDate;
     private long livingTime = 4;
-
-    public Bomb(Game game, Position position) {
-        super(game, position);
-        this.bombRange = 1;
-        this.isExplode = false;
-        this.isDisplayed = false;
-        launchTask();
-    }
-
-    public Bomb(Game game, Position position, int bombRange) {
-        super(game, position);
-        this.bombRange = bombRange;
-        this.isExplode = false;
-        this.isDisplayed = false;
-        launchTask();
-    }
 
     public Bomb(Game game, Position position, long creationDate, int bombRange) {
         super(game, position);
@@ -88,25 +71,6 @@ public class Bomb extends GameObject {
                 }
             }
         }
-    }
-
-    private void launchTask() {
-        Timer timer = new Timer("Timer");
-        long period = 1000L;
-
-        timer.schedule(new TimerTask() {
-            final long t0 = System.currentTimeMillis();
-
-            public void run() {
-                if (System.currentTimeMillis() - t0 > 2L * 1000L) { //to check if the timer ends
-                    timerEnds();
-                    cancel();
-                }
-                long t = System.currentTimeMillis() - t0;
-                countdown = ((int) (t / 1000) + 1);
-//                System.out.println("    ====> coutdonw = " + countdown);
-            }
-        }, new Date(), period);
     }
 
     private void timerEnds() {
