@@ -147,10 +147,10 @@ public final class GameEngine {
 
     private void update(long now) {
         //TODO is it a good idea to factorise all player update of this method ?
-        if (player.isUpdateSprites()) {
+        /* if (player.isUpdateSprites()) {
             updateSprites();
             player.setUpdateSprites(false);
-        }
+        }*/
 
         player.update(now);
 
@@ -164,6 +164,7 @@ public final class GameEngine {
         }
 
         updateBombs(now);
+        updateSprites();
     }
 
     /**

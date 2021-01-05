@@ -4,12 +4,16 @@ import fr.ubx.poo.game.Direction;
 import fr.ubx.poo.game.Game;
 import fr.ubx.poo.game.Position;
 import fr.ubx.poo.model.decor.Decor;
+import fr.ubx.poo.model.decor.Explosion;
 import fr.ubx.poo.model.go.character.Monster;
+import javafx.geometry.Pos;
 
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
+
+import static java.lang.Thread.sleep;
 
 public class Bomb extends GameObject {
 
@@ -152,7 +156,9 @@ public class Bomb extends GameObject {
                         //under, some decor don't have to be destroyed (ex: key), but we can "check" it in overrided method in Key I think
 
                         //to destroy the entity
-                        this.world.clear(pos);
+                        // this.world.clear(pos);
+
+                        makeExplosion(pos);
 
                         System.out.println("    \\_ destroy");
                     } else if (!decor.isDestructible()) {
@@ -170,6 +176,22 @@ public class Bomb extends GameObject {
 
 //            System.out.println("    > "+range);
         }
+    }
+
+    private void makeExplosion(Position pos) {
+        this.world.set(pos, new Explosion());
+
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            public void run() {
+                try {
+                    Thread.sleep(200);
+                    world.clear(pos);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Date());
     }
 
     public int getCountdown() {
