@@ -195,6 +195,9 @@ public final class GameEngine {
                 // Remove the sprite from the layer and remove it from the Sprites list
                 bombSprite.ifPresent(Sprite::remove);
                 bombSprite.ifPresent(spriteBombs::remove);
+
+                //to update sprite of entites which could be destroyed by bomb
+                updateSprites();
             }
         }
     }

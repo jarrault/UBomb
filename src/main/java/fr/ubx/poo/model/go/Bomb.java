@@ -140,7 +140,10 @@ public class Bomb extends GameObject {
 
                         //TODO I think it's here to begin Explosion Object creation
                         //under, some decor don't have to be destroyed (ex: key), but we can "check" it in overrided method in Key I think
-                        //decor.destroy(); //TODO
+
+                        //to destroy the entity
+                        this.world.clear(pos);
+
                         System.out.println("    \\_ destroy");
                     }
                 }
