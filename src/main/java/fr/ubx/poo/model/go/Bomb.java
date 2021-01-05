@@ -98,6 +98,9 @@ public class Bomb extends GameObject {
 
     private void timerEnds() {
         bombExplodes();
+
+        //"Lorsque une bombe explose, une nouvelle bombe est ajoutée à l’inventaire du joueur."
+        this.game.getPlayer().incrementBombNumber();
     }
 
     private void bombExplodes() {

@@ -207,6 +207,13 @@ public class Player extends Character {
         this.bombs.remove(bomb);
     }
 
+    /**
+     * To add one bomb in number of allowed bomb in the player status
+     */
+    public void incrementBombNumber(){
+        this.numberOfBombs++;
+    }
+
     public boolean isWinner() {
         return winner;
     }
