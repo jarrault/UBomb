@@ -4,6 +4,7 @@ import fr.ubx.poo.game.Direction;
 import fr.ubx.poo.game.Game;
 import fr.ubx.poo.game.Position;
 import fr.ubx.poo.model.decor.Decor;
+import fr.ubx.poo.model.go.character.Monster;
 
 import java.util.Date;
 import java.util.Timer;
@@ -59,7 +60,7 @@ public class Bomb extends GameObject {
 
 //            checkIfInflictDamageToCharacter();
 
-            if(this.countdown == 3){
+            if (this.countdown == 3) {
                 timerEnds();
             } else {
                 this.countdown++;
@@ -73,7 +74,15 @@ public class Bomb extends GameObject {
         //for Player
         if (this.game.getPlayer().getPosition().equals(position)) {
 //            this.game.inflictDamageToPlayer(1); //be correct when merge with other branchs don't worry
-            System.out.println("oui player detection");
+        }
+
+        //for Monster
+        if (!this.game.getMonsters().isEmpty()) {
+            for (Monster monster : this.game.getMonsters()) {
+                if (monster.getPosition().equals(position)) {
+//                    this.game.inflictDamageToMonster(monster, 1);
+                }
+            }
         }
     }
 
@@ -146,7 +155,7 @@ public class Bomb extends GameObject {
                         this.world.clear(pos);
 
                         System.out.println("    \\_ destroy");
-                    } else if(!decor.isDestructible()){
+                    } else if (!decor.isDestructible()) {
                         isExplosionObstacled = true;
                     }
                 }
