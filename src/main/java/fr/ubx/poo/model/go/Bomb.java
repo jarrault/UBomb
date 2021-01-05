@@ -3,9 +3,7 @@ package fr.ubx.poo.model.go;
 import fr.ubx.poo.game.Direction;
 import fr.ubx.poo.game.Game;
 import fr.ubx.poo.game.Position;
-import fr.ubx.poo.model.decor.Box;
 import fr.ubx.poo.model.decor.Decor;
-import fr.ubx.poo.model.decor.bonus.Bonus;
 
 import java.util.Date;
 import java.util.Timer;
@@ -59,7 +57,7 @@ public class Bomb extends GameObject {
 //        if(convert > (this.creationDate + this.livingTime)){
             timeStamp = convert;
 
-            checkIfInflictDamageToPlayer();
+//            checkIfInflictDamageToCharacter();
 
             if(this.countdown == 3){
                 timerEnds();
@@ -71,9 +69,11 @@ public class Bomb extends GameObject {
         }
     }
 
-    private void checkIfInflictDamageToPlayer() {
-        if (this.game.getPlayer().getPosition().equals(this.getPosition())) {
+    private void checkIfInflictDamageToCharacter(Position position) {
+        //for Player
+        if (this.game.getPlayer().getPosition().equals(position)) {
 //            this.game.inflictDamageToPlayer(1); //be correct when merge with other branchs don't worry
+            System.out.println("oui player detection");
         }
     }
 
@@ -150,7 +150,12 @@ public class Bomb extends GameObject {
                         isExplosionObstacled = true;
                     }
                 }
-                //that's all  //TODO it miss player and monsters explosion logic
+
+
+                //TODO it miss player and monsters explosion logic
+                this.checkIfInflictDamageToCharacter(pos);
+
+                //that's all
 
             }
 
