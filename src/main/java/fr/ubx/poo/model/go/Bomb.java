@@ -21,7 +21,6 @@ public class Bomb extends GameObject {
     private boolean isExplode;
     private boolean isDisplayed;
     private long creationDate;
-//    private long livingTime = 6;
     private long livingTime = 3;
 
     public Bomb(Game game, Position position, long creationDate, int bombRange) {

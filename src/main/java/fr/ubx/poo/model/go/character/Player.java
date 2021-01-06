@@ -30,7 +30,7 @@ public class Player extends Character {
   
     private int numberOfBombs = 1;
     private boolean bombRequested = false;
-    private int lives = 1;
+//    private int lives = 1;
 //    private boolean winner;
 //    private boolean updateSprites = false;
 //    private int numberOfBombs = 2;
