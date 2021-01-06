@@ -3,13 +3,19 @@ package fr.ubx.poo.model.go.character;
 import fr.ubx.poo.game.Direction;
 import fr.ubx.poo.game.Game;
 import fr.ubx.poo.game.Position;
-import fr.ubx.poo.model.Movable;
 import fr.ubx.poo.model.decor.*;
-import fr.ubx.poo.model.go.GameObject;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Monster character class
+ */
 public class Monster extends Character {
+
+    /**
+     * //TODO
+     */
+    long timeStamp = 0;
 
     public Monster(Game game, Position position) {
         super(game, position);
@@ -25,10 +31,6 @@ public class Monster extends Character {
 
         Decor decor = this.world.get(nextPos);
 
-//        if (decor instanceof Box) {
-//            return canMoveBox(direction, nextPos, decor);
-//        }
-
         if (decor != null) {
             return decor.isTraversable();
         }
@@ -43,8 +45,6 @@ public class Monster extends Character {
 
     }
 
-    long timeStamp = 0;
-
     @Override
     public void update(long now) {
         Direction dir = Direction.random();
@@ -55,20 +55,14 @@ public class Monster extends Character {
             timeStamp = convert;
 
             if (canMove(dir)) {
-//                doMove(dir);
-
-                checkIfInflictDamageToPlayer();
+                // to inflict damage to the player if it's possibleT
+                if(this.game.getPlayer().getPosition().equals(this.getPosition())){
+                    this.game.inflictDamageToPlayer(1);
+                }
             }
-
         }
 
         //to check if the monster is dead
         this.checkIfCharacterIsDead();
-    }
-
-    private void checkIfInflictDamageToPlayer() {
-        if(this.game.getPlayer().getPosition().equals(this.getPosition())){
-            this.game.inflictDamageToPlayer(1);
-        }
     }
 }
