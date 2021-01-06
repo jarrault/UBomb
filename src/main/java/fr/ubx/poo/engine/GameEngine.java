@@ -7,8 +7,10 @@ package fr.ubx.poo.engine;
 import fr.ubx.poo.game.Direction;
 import fr.ubx.poo.game.PositionNotFoundException;
 import fr.ubx.poo.game.World;
+import fr.ubx.poo.model.go.Bomb;
 import fr.ubx.poo.model.go.character.Monster;
 import fr.ubx.poo.view.sprite.Sprite;
+import fr.ubx.poo.view.sprite.SpriteBomb;
 import fr.ubx.poo.view.sprite.SpriteFactory;
 import fr.ubx.poo.game.Game;
 import fr.ubx.poo.model.go.character.Player;
@@ -24,8 +26,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 public final class GameEngine {
@@ -35,14 +36,15 @@ public final class GameEngine {
     private final Game game;
     private final Player player;
     private final List<Sprite> sprites = new ArrayList<>();
-    private final List<Sprite> monsterSprites = new ArrayList<>();
+    private final List<Sprite> spriteMonsters = new ArrayList<>();
+    private final List<SpriteBomb> spriteBombs = new ArrayList<>();
     private final ArrayList<Monster> monsters;
     private StatusBar statusBar;
     private Pane layer;
     private Input input;
     private Stage stage;
     private Sprite spritePlayer;
-//    private Sprite spriteMonster;
+    private Sprite spriteMonster;
 
     public GameEngine(final String windowTitle, Game game, final Stage stage) {
         this.windowTitle = windowTitle;
@@ -75,7 +77,8 @@ public final class GameEngine {
         statusBar = new StatusBar(root, sceneWidth, sceneHeight, game);
         // Create decor sprites
         game.getWorld().forEach((pos, d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
-        monsters.forEach((monster) -> monsterSprites.add(SpriteFactory.createMonster(layer, monster)));
+//        monsters.forEach((monster) -> monsterSprites.add(SpriteFactory.createMonster(layer, monster)));
+        monsters.forEach((monster) -> spriteMonsters.add(SpriteFactory.createMonster(layer, monster)));
 
         spritePlayer = SpriteFactory.createPlayer(layer, player);
     }
@@ -118,6 +121,10 @@ public final class GameEngine {
             //when player press ENTER he try to open a door
             player.requestOpenDoor();
         }
+        if (input.isBomb()) {
+            this.player.requestBomb();
+        }
+
         input.clear();
     }
 
@@ -165,13 +172,20 @@ public final class GameEngine {
         statusBar = new StatusBar(root, sceneWidth, sceneHeight, game);
 
         // Create Monsters sprites
-        monsters.forEach((monster) -> monsterSprites.add(SpriteFactory.createMonster(layer, monster)));
+//        monsters.forEach((monster) -> monsterSprites.add(SpriteFactory.createMonster(layer, monster)));
+        monsters.forEach((monster) -> spriteMonsters.add(SpriteFactory.createMonster(layer, monster)));
 
         //Create Player sprite
         spritePlayer = SpriteFactory.createPlayer(layer, player);
     }
 
     private void update(long now) {
+        //TODO is it a good idea to factorise all player update of this method ?
+        /* if (player.isUpdateSprites()) {
+            updateSprites();
+            player.setUpdateSprites(false);
+        }*/
+
         if (this.game.isLevelChange()) {
             monsters.clear();//TODO maybe do it somewhere else
             this.game.setLevelChange(false);
@@ -180,10 +194,10 @@ public final class GameEngine {
             updateSprites();
         }
 
-        if (player.isUpdateSprites()) {
-            updateSprites();
-            player.setUpdateSprites(false);
-        }
+//        if (player.isUpdateSprites()) {
+//            updateSprites();
+//            player.setUpdateSprites(false);
+//        }
 
         player.update(now);
 
@@ -197,13 +211,53 @@ public final class GameEngine {
             gameLoop.stop();
             showMessage("Gagné", Color.BLUE);
         }
+
+        updateBombs(now);
+        updateSprites();
+    }
+
+    /**
+     * updateBombs loop over all the bombs and update it's states.
+     * 1. Add the sprite of a bomb on the layer if a bomb is posed
+     * 2. Remove the sprite of the bomb from the layer if it as explode
+
+     * @param now //TODO
+     */
+    private void updateBombs(long now) {
+        Iterator<Bomb> bombIterator = this.player.getBombs().iterator();
+
+        while (bombIterator.hasNext()) {
+            Bomb bomb = bombIterator.next();
+
+            bomb.update(now);
+
+            if (!bomb.isDisplayed()) {
+                spriteBombs.add(SpriteFactory.createBomb(layer, bomb));
+                bomb.setDisplayed(true);
+            }
+
+            if (bomb.isExplode()) {
+                bombIterator.remove();
+
+                // Get the sprite that match with the bomb that explode
+                Optional<SpriteBomb> bombSprite = spriteBombs.stream().filter(b -> b.getGo().equals(bomb)).findFirst();
+
+                // Remove the sprite from the layer and remove it from the Sprites list
+                bombSprite.ifPresent(Sprite::remove);
+                bombSprite.ifPresent(spriteBombs::remove);
+
+                //to update sprite of entites which could be destroyed by bomb
+                updateSprites();
+            }
+        }
     }
 
     private void render() {
         sprites.forEach(Sprite::render);
+        spriteMonsters.forEach(Sprite::render);
+        spriteBombs.forEach(Sprite::render);
         // last rendering to have player in the foreground
         spritePlayer.render();
-        monsterSprites.forEach(Sprite::render);
     }
 
     public void start() {

@@ -34,7 +34,13 @@ public enum ImageResource {
     MONSTER_RIGHT("monster_right.png"),
     MONSTER_UP("monster_up.png"),
     DOOR_CLOSED("door_closed.png"),
-    DOOR_OPENED("door_opened.png");
+    DOOR_OPENED("door_opened.png"),
+    BOMB_4("bomb4.png"),
+    BOMB_3("bomb3.png"),
+    BOMB_2("bomb2.png"),
+    BOMB_1("bomb1.png"),
+    EXPLOSION("explosion.png")
+    ;
 
     private final String FileName;
 

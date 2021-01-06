@@ -9,6 +9,8 @@ import static fr.ubx.poo.view.image.ImageResource.*;
 import fr.ubx.poo.game.Position;
 import fr.ubx.poo.model.decor.*;
 import fr.ubx.poo.model.decor.bonus.*;
+import fr.ubx.poo.model.go.Bomb;
+import fr.ubx.poo.model.go.Explosion;
 import fr.ubx.poo.model.go.character.Monster;
 import fr.ubx.poo.model.go.character.Player;
 import fr.ubx.poo.view.image.ImageFactory;
@@ -38,11 +40,15 @@ public final class SpriteFactory {
         if (decor instanceof BombNumberInc)
             return new SpriteDecor(layer, factory.get(BONUS_BOMB_NUMBER_INC), position);
 
-        if(decor instanceof Door)
-            return createDoor(layer, position, (Door)decor); //TODO i'm not sure the cast is correct here
+        if (decor instanceof Door)
+            return createDoor(layer, position, (Door) decor); //TODO i'm not sure the cast is correct here
 
         if (decor instanceof Princess)
             return new SpriteDecor(layer, factory.get(PRINCESS), position);
+
+        if (decor instanceof Explosion)
+            return new SpriteDecor(layer, factory.get(EXPLOSION), position);
+
         //return null;
         throw new RuntimeException("Unsuported sprite for decor " + decor);
     }
@@ -50,11 +56,16 @@ public final class SpriteFactory {
     public static Sprite createPlayer(Pane layer, Player player) {
         return new SpritePlayer(layer, player);
     }
+
     public static Sprite createMonster(Pane layer, Monster monster) {
         return new SpriteMonster(layer, monster);
     }
 
     public static  Sprite createDoor(Pane layer, Position position, Door door) {
         return new SpriteDoor(layer, position, door);
+    }
+
+    public static SpriteBomb createBomb(Pane layer, Bomb bomb) {
+        return new SpriteBomb(layer, bomb);
     }
 }

@@ -27,6 +27,10 @@ public final class ImageFactory {
             DIGIT_5, DIGIT_6, DIGIT_7, DIGIT_8, DIGIT_9,
     };
 
+    private final ImageResource[] bombs = new ImageResource[]{
+            BOMB_4, BOMB_3, BOMB_2, BOMB_1
+    };
+
     private ImageFactory() {
         images = new Image[ImageResource.values().length];
     }
@@ -53,8 +57,9 @@ public final class ImageFactory {
     }
 
     public Image getDigit(int i) {
-        if (i < 0 || i > 9)
+        if (i < 0 || i > 9) {
             throw new IllegalArgumentException();
+        }
         return get(digits[i]);
     }
 
@@ -66,12 +71,19 @@ public final class ImageFactory {
         return get(monster_directions[direction.ordinal()]);
     }
 
-    public Image getDoor(boolean isOpen){
-        if(isOpen) {
+    public Image getDoor(boolean isOpen) {
+        if (isOpen) {
             return get(DOOR_OPENED);
         } else {
             return get(DOOR_CLOSED);
         }
+    }
+
+    public Image getBomb(int i) {
+        if (i < 0 || i > 3) {
+            throw new IllegalArgumentException();
+        }
+        return get(bombs[i]);
     }
 
     /**

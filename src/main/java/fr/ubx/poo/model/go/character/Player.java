@@ -10,11 +10,15 @@ import fr.ubx.poo.game.WorldEntity;
 import fr.ubx.poo.model.Movable;
 import fr.ubx.poo.model.decor.*;
 import fr.ubx.poo.model.go.GameObject;
+import fr.ubx.poo.model.go.Bomb;
 import fr.ubx.poo.model.decor.Box;
 import fr.ubx.poo.model.decor.Decor;
 import fr.ubx.poo.model.decor.Princess;
 import fr.ubx.poo.game.Game;
 import fr.ubx.poo.model.decor.bonus.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Player extends Character {
 
@@ -26,12 +30,19 @@ public class Player extends Character {
     private boolean updateSprites = false;
   
     private int numberOfBombs = 1;
+    private boolean bombRequested = false;
+    private int lives = 1;
+//    private boolean winner;
+//    private boolean updateSprites = false;
+//    private int numberOfBombs = 2;
     private int bombsRange = 1;
+    private List<Bomb> bombs;
 
 
     public Player(Game game, Position position) {
         super(game, position);
         this.lives = game.getInitPlayerLives();
+        this.bombs = new ArrayList<>();
     }
 
     public int getLives() {
@@ -48,13 +59,13 @@ public class Player extends Character {
     /**
      * to try open a door when ENTER input
      */
-    public void requestOpenDoor(){
+    public void requestOpenDoor() {
         Position myPos = this.getPosition();
         Decor decor = this.world.get(myPos);
 
-        if(decor instanceof Door) {//TODO verify if there is a better way to check it
-            Door door = (Door)decor;
-            if ( !door.isOpen() && keys >= 1 ){//open the door only if the player have keys
+        if (decor instanceof Door) {//TODO verify if there is a better way to check it
+            Door door = (Door) decor;
+            if (!door.isOpen() && keys >= 1) {//open the door only if the player have keys
                 this.updateSprites = true;
                 this.world.openDoor(door); // it's to verify if the door correctly open (without checking the keys)
                 this.keys--;
@@ -62,7 +73,13 @@ public class Player extends Character {
 
         }
         //TODO maybe a problem here when open the door, it is called twice ?
+    }
 
+    public void requestBomb() {
+//        if (this.game.getWorld().get(getPosition()) instanceof Bomb) { //dont work but it's an idea like that
+//            this.direction = direction;
+//        }
+        bombRequested = true;
     }
 
     @Override
@@ -108,6 +125,32 @@ public class Player extends Character {
         updateSprites = true;
 
         return true;
+    }
+
+    public boolean canPutBomb() {
+        if(this.numberOfBombs == 0){
+            return false;
+        }
+
+        for (Bomb bomb : bombs) {
+            if (bomb.getPosition().equals(getPosition())) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public Bomb doPutBomb(long now) {
+        if (!canPutBomb()) {
+            return null;
+        }
+
+        Bomb bomb = new Bomb(game, getPosition(), now, this.bombsRange);
+        this.numberOfBombs--;
+        bombs.add(bomb);
+        updateSprites = true;
+        return bomb;
     }
 
     public void doMove(Direction direction) {
@@ -167,6 +210,13 @@ public class Player extends Character {
             this.world = this.game.getWorld();
         }
 
+        if (bombRequested){
+            if(canPutBomb()){
+                doPutBomb(now);
+            }
+        }
+
+        bombRequested = false;
         moveRequested = false;
     }
 
@@ -200,6 +250,22 @@ public class Player extends Character {
             this.world.clear(myPos);
             this.updateSprites = true;
         }
+
+    }
+
+    public void addBomb(Bomb bomb){
+        this.bombs.add(bomb);
+    }
+
+    public void removeBomb(Bomb bomb){
+        this.bombs.remove(bomb);
+    }
+
+    /**
+     * To add one bomb in number of allowed bomb in the player status
+     */
+    public void incrementBombNumber(){
+        this.numberOfBombs++;
     }
 
     public boolean isWinner() {
@@ -216,6 +282,10 @@ public class Player extends Character {
 
     public void setUpdateSprites(boolean updateSprites) {
         this.updateSprites = updateSprites;
+    }
+
+    public void setBombs(List<Bomb> bomb){
+        this.bombs = bomb;
     }
 
     public int getNumberOfBombs() {
@@ -240,5 +310,9 @@ public class Player extends Character {
 
     public void setLives(int lives) {
         this.lives = lives;
+    }
+
+    public List<Bomb> getBombs() {
+        return bombs;
     }
 }

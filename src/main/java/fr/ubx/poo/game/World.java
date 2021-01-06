@@ -4,18 +4,16 @@
 
 package fr.ubx.poo.game;
 
+import fr.ubx.poo.model.go.Bomb;
 import fr.ubx.poo.model.decor.Decor;
 import fr.ubx.poo.model.decor.Door;
 import fr.ubx.poo.model.decor.DoorNextOpened;
 import fr.ubx.poo.model.go.character.Monster;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.function.BiConsumer;
-
-import static fr.ubx.poo.game.WorldEntity.*;
 
 public class World {
     private final Map<Position, Decor> grid;
@@ -54,7 +52,7 @@ public class World {
                 // because the other level don't contain Player case
 
                 if(this.comeFromNextLevel) {
-                    if (raw[y][x] == DoorNextClosed) {
+                    if (raw[y][x] == WorldEntity.DoorNextClosed) {
                         this.comeFromNextLevel = false;
                         return new Position(x,y);
                     }
@@ -63,7 +61,7 @@ public class World {
                     if (raw[y][x] == WorldEntity.Player && this.levelNumber == 1) {
 //                    System.out.println("findPlayer : find player in level 1");
                         return new Position(x, y);
-                    } else if ((raw[y][x] == WorldEntity.Player || raw[y][x] == DoorPrevOpened)
+                    } else if ((raw[y][x] == WorldEntity.Player || raw[y][x] == WorldEntity.DoorPrevOpened)
                             && this.levelNumber > 1) {
 //                    System.out.println("findPlayer : find opened door");
                         return new Position(x, y);
