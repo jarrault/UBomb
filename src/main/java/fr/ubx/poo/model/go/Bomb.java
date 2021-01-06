@@ -51,7 +51,6 @@ public class Bomb extends GameObject {
                 timerEnds();
             } else {
                 this.countdown++;
-//                System.out.println("    ====> coutdonw = " + countdown);
             }
 
         }
@@ -83,33 +82,26 @@ public class Bomb extends GameObject {
     }
 
     private void bombExplodes() {
-        //sout my pos
-        System.out.println("=> " + this.getPosition());
-
         //loop to scan and process the explosion cross
         for (Direction direction : Direction.values()) {
             checkExplosionDirection(direction);
         }
 
         this.isExplode = true;
-        System.out.println("bomb explode");
 
 //        this.game.getPlayer().removeBomb(this);
     }
 
     private void checkExplosionDirection(Direction direction) {
-        System.out.println(direction);
         Position pos = getPosition();
         boolean isExplosionObstacled = false;
         boolean willExploded = true;
 
         for (int range = 1; range <= this.bombRange; range++) {
             pos = direction.nextPosition(pos);
-            System.out.println("    >> " + pos);
 
             if (this.world.isInside(pos)) {
                 Decor decor = this.world.get(pos);
-                System.out.println("    -->> " + decor);
 
                 if (isExplosionObstacled) {
 //                    makeExplosion(pos);
@@ -117,7 +109,6 @@ public class Bomb extends GameObject {
                 }
 
                 if (decor != null) {
-                    System.out.println("    \\-isDestructible>> " + decor.isDestructible());
                     if (decor.isDestructible() && !isExplosionObstacled) {
                         if (!decor.isTraversable()) { //it work for Box and other decor which "stop" explosion ?
                             isExplosionObstacled = true;
@@ -130,7 +121,6 @@ public class Bomb extends GameObject {
 
                         makeExplosion(pos);
 
-                        System.out.println("    \\_ destroy");
                     } else if (!decor.isDestructible()) {
                         isExplosionObstacled = true;
                     }
@@ -142,8 +132,6 @@ public class Bomb extends GameObject {
 
 
             }
-
-//            System.out.println("    > "+range);
         }
     }
 

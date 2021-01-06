@@ -107,13 +107,11 @@ public class Game {
         this.isLevelChange = true;
         this.level--;
         this.getWorld().comeFromNextLevel();
-        System.out.println("prev level : " + this.level);
     }
 
     public void goNextLevel() {
         this.isLevelChange = true;
         this.level++;
-        System.out.println("new level : " + this.level);
     }
 
     public boolean isLevelChange() {

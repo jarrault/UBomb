@@ -59,11 +59,9 @@ public class World {
                 } else {
 
                     if (raw[y][x] == WorldEntity.Player && this.levelNumber == 1) {
-//                    System.out.println("findPlayer : find player in level 1");
                         return new Position(x, y);
                     } else if ((raw[y][x] == WorldEntity.Player || raw[y][x] == WorldEntity.DoorPrevOpened)
                             && this.levelNumber > 1) {
-//                    System.out.println("findPlayer : find opened door");
                         return new Position(x, y);
                     }
 
