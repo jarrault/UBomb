@@ -58,6 +58,8 @@ public class Bomb extends GameObject {
     }
 
     private void checkIfInflictDamageToCharacter(Position position) {
+        //TODO complet this method
+
         //for Player
         if (this.game.getPlayer().getPosition().equals(position)) {
 //            this.game.inflictDamageToPlayer(1); //be correct when merge with other branchs don't worry
@@ -99,6 +101,7 @@ public class Bomb extends GameObject {
         System.out.println(direction);
         Position pos = getPosition();
         boolean isExplosionObstacled = false;
+        boolean willExploded = true;
 
         for (int range = 1; range <= this.bombRange; range++) {
             pos = direction.nextPosition(pos);
@@ -108,19 +111,22 @@ public class Bomb extends GameObject {
                 Decor decor = this.world.get(pos);
                 System.out.println("    -->> " + decor);
 
-                //TODO need to find a solution to instanceof check for Decor
+                if (isExplosionObstacled) {
+//                    makeExplosion(pos);
+                    willExploded = false;
+                }
+
                 if (decor != null) {
-                    System.out.println("    \\->> " + decor.isDestructible());
+                    System.out.println("    \\-isDestructible>> " + decor.isDestructible());
                     if (decor.isDestructible() && !isExplosionObstacled) {
                         if (!decor.isTraversable()) { //it work for Box and other decor which "stop" explosion ?
                             isExplosionObstacled = true;
                         }
 
                         //TODO I think it's here to begin Explosion Object creation
-                        //under, some decor don't have to be destroyed (ex: key), but we can "check" it in overrided method in Key I think
 
                         //to destroy the entity
-                        // this.world.clear(pos);
+                        this.world.clear(pos);
 
                         makeExplosion(pos);
 
@@ -128,13 +134,12 @@ public class Bomb extends GameObject {
                     } else if (!decor.isDestructible()) {
                         isExplosionObstacled = true;
                     }
+                } else if ((decor == null) && (!isExplosionObstacled)) {
+                    makeExplosion(pos);
                 }
 
-
-                //TODO it miss player and monsters explosion logic
                 this.checkIfInflictDamageToCharacter(pos);
 
-                //that's all
 
             }
 
