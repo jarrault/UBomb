@@ -52,10 +52,11 @@ public class Player extends Character {
         Position myPos = this.getPosition();
         Decor decor = this.world.get(myPos);
 
-        if(decor instanceof DoorNextClosed) {//TODO verify if there is a better way to check it
-            if ( keys >= 1 ){//open the door only if the player have keys
+        if(decor instanceof Door) {//TODO verify if there is a better way to check it
+            Door door = (Door)decor;
+            if ( !door.isOpen() && keys >= 1 ){//open the door only if the player have keys
                 this.updateSprites = true;
-                this.world.openDoor(myPos); // it's to verify if the door correctly open (without checking the keys)
+                this.world.openDoor(door); // it's to verify if the door correctly open (without checking the keys)
                 this.keys--;
             }
 
@@ -171,14 +172,25 @@ public class Player extends Character {
         Position myPos = this.getPosition();
         Decor decor = this.world.get(this.getPosition());
 
-        if(decor instanceof DoorPrevOpened) {//TODO verify if there is a better way to check it
-            //move to the previous level
-            this.game.goPreviousLevel();
-        }
+//        if(decor instanceof DoorPrevOpened) {//TODO verify if there is a better way to check it
+//            //move to the previous level
+//            this.game.goPreviousLevel();
+//        }
+//
+//        if(decor instanceof DoorNextOpened) {//to do verify the checking
+//            //move to the next level
+//            this.game.goNextLevel();
+//        }
 
-        if(decor instanceof DoorNextOpened) {//to do verify the checking
-            //move to the next level
-            this.game.goNextLevel();
+        if(decor instanceof Door){
+            Door door = (Door)decor;
+
+            if(door.isOpenToNextLevel()){
+                this.game.goNextLevel();
+
+            } else if(door.isOpenToPreviousLevel()){
+                this.game.goPreviousLevel();
+            }
         }
 
         if(decor instanceof Key){

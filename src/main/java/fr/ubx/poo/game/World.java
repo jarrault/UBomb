@@ -5,6 +5,7 @@
 package fr.ubx.poo.game;
 
 import fr.ubx.poo.model.decor.Decor;
+import fr.ubx.poo.model.decor.Door;
 import fr.ubx.poo.model.decor.DoorNextOpened;
 import fr.ubx.poo.model.go.character.Monster;
 
@@ -130,13 +131,16 @@ public class World {
         return grid.get(position) == null;
     }
 
-    public void openDoor(Position pos) {
-        //TODO is it necessary to check if the Position is a door ?
-        //remove the closed door
-        this.clear(pos);
+//    public void openDoor(Position pos) {
+    public void openDoor(Door door) {
+//        //TODO is it necessary to check if the Position is a door ?
+//        //remove the closed door
+//        this.clear(pos);
+//
+//        //set the new door
+//        this.set(pos, new DoorNextOpened());
 
-        //set the new door
-        this.set(pos, new DoorNextOpened());
+        door.openTheDoor();
     }
 
     public int getLevelNumber() {

@@ -51,12 +51,12 @@ public class WorldBuilder {
                 return new BombRangeDec();
             case BombRangeInc:
                 return new BombRangeInc();
+
             case DoorNextClosed:
-                return new DoorNextClosed();
             case DoorNextOpened:
-                return new DoorNextOpened();
             case DoorPrevOpened:
-                return new DoorPrevOpened();
+                return new Door(entity);
+
             case Princess:
                 return new Princess();
             default:

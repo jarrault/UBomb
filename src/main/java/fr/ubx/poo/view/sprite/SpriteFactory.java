@@ -37,12 +37,10 @@ public final class SpriteFactory {
             return new SpriteDecor(layer, factory.get(BONUS_BOMB_NUMBER_DEC), position);
         if (decor instanceof BombNumberInc)
             return new SpriteDecor(layer, factory.get(BONUS_BOMB_NUMBER_INC), position);
-        if (decor instanceof DoorNextClosed)
-            return new SpriteDecor(layer, factory.get(DOOR_CLOSED), position);
-        if (decor instanceof DoorNextOpened)
-            return new SpriteDecor(layer, factory.get(DOOR_OPENED), position);
-        if (decor instanceof DoorPrevOpened)
-            return new SpriteDecor(layer, factory.get(DOOR_OPENED), position);
+
+        if(decor instanceof Door)
+            return createDoor(layer, position, (Door)decor); //TODO i'm not sure the cast is correct here
+
         if (decor instanceof Princess)
             return new SpriteDecor(layer, factory.get(PRINCESS), position);
         return null;
@@ -53,5 +51,9 @@ public final class SpriteFactory {
     }
     public static Sprite createMonster(Pane layer, Monster monster) {
         return new SpriteMonster(layer, monster);
+    }
+
+    public static  Sprite createDoor(Pane layer, Position position, Door door) {
+        return new SpriteDoor(layer, position, door);
     }
 }

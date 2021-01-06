@@ -66,6 +66,14 @@ public final class ImageFactory {
         return get(monster_directions[direction.ordinal()]);
     }
 
+    public Image getDoor(boolean isOpen){
+        if(isOpen) {
+            return get(DOOR_OPENED);
+        } else {
+            return get(DOOR_CLOSED);
+        }
+    }
+
     /**
      * Holder
      */
