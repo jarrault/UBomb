@@ -55,12 +55,15 @@ public class Monster extends Character {
             timeStamp = convert;
 
             if (canMove(dir)) {
-                doMove(dir);
+//                doMove(dir);
 
                 checkIfInflictDamageToPlayer();
             }
 
         }
+
+        //to check if the monster is dead
+        this.checkIfCharacterIsDead();
     }
 
     private void checkIfInflictDamageToPlayer() {

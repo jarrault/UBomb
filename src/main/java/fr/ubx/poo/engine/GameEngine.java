@@ -14,6 +14,7 @@ import fr.ubx.poo.view.sprite.SpriteBomb;
 import fr.ubx.poo.view.sprite.SpriteFactory;
 import fr.ubx.poo.game.Game;
 import fr.ubx.poo.model.go.character.Player;
+import fr.ubx.poo.view.sprite.SpriteMonster;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.scene.Group;
@@ -36,15 +37,15 @@ public final class GameEngine {
     private final Game game;
     private final Player player;
     private final List<Sprite> sprites = new ArrayList<>();
-    private final List<Sprite> spriteMonsters = new ArrayList<>();
+    private final List<SpriteMonster> spriteMonsters = new ArrayList<>();
     private final List<SpriteBomb> spriteBombs = new ArrayList<>();
-    private final ArrayList<Monster> monsters;
+    private List<Monster> monsters; //no need this is final ????
     private StatusBar statusBar;
     private Pane layer;
     private Input input;
     private Stage stage;
     private Sprite spritePlayer;
-    private Sprite spriteMonster;
+//    private Sprite spriteMonster;
 
     public GameEngine(final String windowTitle, Game game, final Stage stage) {
         this.windowTitle = windowTitle;
@@ -186,6 +187,7 @@ public final class GameEngine {
             player.setUpdateSprites(false);
         }*/
 
+        //when change to an other level (when pass through a door)
         if (this.game.isLevelChange()) {
             monsters.clear();//TODO maybe do it somewhere else
             this.game.setLevelChange(false);
@@ -194,15 +196,30 @@ public final class GameEngine {
             updateSprites();
         }
 
+        //TODO it's for why code under ?
 //        if (player.isUpdateSprites()) {
 //            updateSprites();
 //            player.setUpdateSprites(false);
 //        }
 
+        //update Player
         player.update(now);
 
         monsters.forEach((monster) -> monster.update(now) );
 
+        checkIfGameIsOver();
+
+        //update Bombs
+        updateBombs(now);
+
+        //update common sprites
+        updateSprites();
+    }
+
+    /**
+     * to check if the player win the game or lose it
+     */
+    private void checkIfGameIsOver() {
         if (!player.isAlive()) {
             gameLoop.stop();
             showMessage("Perdu!", Color.RED);
@@ -211,9 +228,6 @@ public final class GameEngine {
             gameLoop.stop();
             showMessage("Gagné", Color.BLUE);
         }
-
-        updateBombs(now);
-        updateSprites();
     }
 
     /**

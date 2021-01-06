@@ -21,7 +21,8 @@ public class Bomb extends GameObject {
     private boolean isExplode;
     private boolean isDisplayed;
     private long creationDate;
-    private long livingTime = 4;
+//    private long livingTime = 6;
+    private long livingTime = 3;
 
     public Bomb(Game game, Position position, long creationDate, int bombRange) {
         super(game, position);
@@ -45,9 +46,7 @@ public class Bomb extends GameObject {
 //        if(convert > (this.creationDate + this.livingTime)){
             timeStamp = convert;
 
-//            checkIfInflictDamageToCharacter();
-
-            if (this.countdown == 3) {
+            if (this.countdown == this.livingTime) {
                 timerEnds();
             } else {
                 this.countdown++;
@@ -61,14 +60,14 @@ public class Bomb extends GameObject {
 
         //for Player
         if (this.game.getPlayer().getPosition().equals(position)) {
-//            this.game.inflictDamageToPlayer(1); //be correct when merge with other branchs don't worry
+            this.game.inflictDamageToPlayer(1); //be correct when merge with other branchs don't worry
         }
 
         //for Monster
         if (!this.game.getMonsters().isEmpty()) {
             for (Monster monster : this.game.getMonsters()) {
                 if (monster.getPosition().equals(position)) {
-//                    this.game.inflictDamageToMonster(monster, 1);
+                    this.game.inflictDamageToMonster(monster, 1);
                 }
             }
         }
