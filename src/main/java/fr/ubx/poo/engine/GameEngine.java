@@ -189,7 +189,7 @@ public final class GameEngine {
 
         //when change to an other level (when pass through a door)
         if (this.game.isLevelChange()) {
-            monsters.clear();//TODO maybe do it somewhere else
+            monsters.clear();//TODO maybe do it somewhere else // --- here to change when monterWorld refactor
             this.game.setLevelChange(false);
             this.game.updateScene();
             updateScene();
