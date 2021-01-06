@@ -7,6 +7,8 @@ import fr.ubx.poo.model.Movable;
 import fr.ubx.poo.model.decor.*;
 import fr.ubx.poo.model.go.GameObject;
 
+import java.util.concurrent.TimeUnit;
+
 public class Monster extends Character {
 
     public Monster(Game game, Position position) {
@@ -41,12 +43,29 @@ public class Monster extends Character {
 
     }
 
+    long timeStamp = 0;
+
     @Override
     public void update(long now) {
         Direction dir = Direction.random();
 
-        if(canMove(dir)){
-            doMove(dir);
+        long convert = TimeUnit.SECONDS.convert(now, TimeUnit.NANOSECONDS);// / 1__000__000__000;
+
+        if(convert > timeStamp) { //TODO I don't know if it's a good idea to do it like that
+            timeStamp = convert;
+
+            if (canMove(dir)) {
+                doMove(dir);
+
+                checkIfInflictDamageToPlayer();
+            }
+
+        }
+    }
+
+    private void checkIfInflictDamageToPlayer() {
+        if(this.game.getPlayer().getPosition().equals(this.getPosition())){
+            this.game.inflictDamageToPlayer(1);
         }
     }
 }
