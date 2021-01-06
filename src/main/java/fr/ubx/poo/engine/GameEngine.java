@@ -202,18 +202,38 @@ public final class GameEngine {
 //            player.setUpdateSprites(false);
 //        }
 
-        //update Player
         player.update(now);
-
-        monsters.forEach((monster) -> monster.update(now) );
-
         checkIfGameIsOver();
 
-        //update Bombs
+        updateMonsters(now);
         updateBombs(now);
 
-        //update common sprites
         updateSprites();
+    }
+
+    /**
+     * To update monsters' logic and sprites
+     * @param now //TODO
+     */
+    private void updateMonsters(long now) {
+        Iterator<Monster> monsterIterator = this.monsters.iterator();
+
+        while (monsterIterator.hasNext()) {
+            Monster monster = monsterIterator.next();
+
+            monster.update(now);
+
+            if (!monster.isAlive()) {
+                monsterIterator.remove();
+
+                // Get the sprite that match with the monster which died
+                Optional<SpriteMonster> monsterSprite = spriteMonsters.stream().filter(m -> m.getGo().equals(monster)).findFirst();
+
+                // Remove the sprite from the layer and remove it from the Sprites list
+                monsterSprite.ifPresent(Sprite::remove);
+                monsterSprite.ifPresent(spriteMonsters::remove);
+            }
+        }
     }
 
     /**
