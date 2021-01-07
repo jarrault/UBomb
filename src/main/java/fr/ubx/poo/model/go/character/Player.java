@@ -223,7 +223,7 @@ public class Player extends Character {
         }
 
         if(this.isInvicible) {
-            System.out.println("----");
+//            System.out.println("----");
             checkInvicibility(now);
         }
 
@@ -235,19 +235,17 @@ public class Player extends Character {
         long convert = TimeUnit.SECONDS.convert(now, TimeUnit.NANOSECONDS);// / 1__000__000__000;
 
         if (convert > timeStamp) { //TODO I don't know if it's a good idea to do it like that
-//        if(convert > (this.creationDate + this.livingTime)){
             timeStamp = convert;
 
             if (this.countdown == this.livingTime) {
                 this.isInvicible = false;
-                System.out.println("not invicible");
+//                System.out.println("not invicible");
 
                 this.timeStamp = 0;
                 this.countdown = 0;
             } else {
                 this.countdown++;
-//                System.out.println("    ====> coutdonw = " + countdown);
-                System.out.println("is invicible");
+//                System.out.println("is invicible");
             }
 
         }
@@ -256,16 +254,6 @@ public class Player extends Character {
     private void moveOnSpecialDecor() {
         Position myPos = this.getPosition();
         Decor decor = this.world.get(this.getPosition());
-
-//        if(decor instanceof DoorPrevOpened) {//TODO verify if there is a better way to check it
-//            //move to the previous level
-//            this.game.goPreviousLevel();
-//        }
-//
-//        if(decor instanceof DoorNextOpened) {//to do verify the checking
-//            //move to the next level
-//            this.game.goNextLevel();
-//        }
 
         if(decor instanceof Door){
             Door door = (Door)decor;
