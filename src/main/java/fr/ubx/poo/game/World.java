@@ -12,6 +12,7 @@ import fr.ubx.poo.model.go.character.Monster;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
@@ -19,6 +20,8 @@ public class World {
     private final Map<Position, Decor> grid;
     private final WorldEntity[][] raw;
     public final Dimension dimension;
+
+    private final ArrayList<Position> monsterPositionList;
 
     private int levelNumber;//it could be final ?
     private boolean comeFromNextLevel;
@@ -30,6 +33,8 @@ public class World {
 
         this.levelNumber = -1;
         this.comeFromNextLevel = false;
+
+        this.monsterPositionList = this.initializeMonstersPosition();
     }
 
     public World(String filepath) {
@@ -40,6 +45,8 @@ public class World {
 
         this.levelNumber = -1;
         this.comeFromNextLevel = false;
+
+        this.monsterPositionList = this.initializeMonstersPosition();
     }
 
     public Position findPlayer() throws PositionNotFoundException {
@@ -85,6 +92,24 @@ public class World {
 
 
     public ArrayList<Position> findMonsters() {
+//        ArrayList<Position> monstersPositions = new ArrayList<>();
+//
+//        for (int x = 0; x < dimension.width; x++) {
+//            for (int y = 0; y < dimension.height; y++) {
+//                if (raw[y][x] == WorldEntity.Monster) {
+////                if (raw[x][y] == WorldEntity.Monster) {
+//                    monstersPositions.add(new Position(x, y));
+//                }
+//            }
+//        }
+//
+//        return monstersPositions;
+        //this is old version of the method, I keep it because it's a temporary modification
+
+        return this.monsterPositionList;
+    }
+
+    public ArrayList<Position> initializeMonstersPosition() {
         ArrayList<Position> monstersPositions = new ArrayList<>();
 
         for (int x = 0; x < dimension.width; x++) {
@@ -98,6 +123,15 @@ public class World {
 
         return monstersPositions;
     }
+
+    public void addMonsterPosition(Position position){
+        this.monsterPositionList.add(position);
+    }
+
+    public void removeMonsterPosition(Position position){
+        this.monsterPositionList.remove(position);
+    }
+
 
     public Decor get(Position position) {
         return grid.get(position);

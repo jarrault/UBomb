@@ -224,6 +224,8 @@ public final class GameEngine {
             monster.update(now);
 
             if (!monster.isAlive()) {
+                this.game.getWorld().removeMonsterPosition(monster.getPosition());
+
                 monsterIterator.remove();
 
                 // Get the sprite that match with the monster which died
