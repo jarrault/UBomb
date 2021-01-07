@@ -57,30 +57,12 @@ public final class GameEngine {
 
     private void initialize(Stage stage, Game game) {
         this.stage = stage;
-        Group root = new Group();
-        layer = new Pane();
-
-        int height = game.getWorld().dimension.height;
-        int width = game.getWorld().dimension.width;
-        int sceneWidth = width * Sprite.size;
-        int sceneHeight = height * Sprite.size;
-        Scene scene = new Scene(root, sceneWidth, sceneHeight + StatusBar.height);
-        scene.getStylesheets().add(getClass().getResource("/css/application.css").toExternalForm());
+        this.updateScene();
+        this.updateSprites();
 
         stage.setTitle(windowTitle);
-        stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
-
-        input = new Input(scene);
-        root.getChildren().add(layer);
-        statusBar = new StatusBar(root, sceneWidth, sceneHeight, game);
-        // Create decor sprites
-        game.getWorld().forEach((pos, d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
-//        monsters.forEach((monster) -> monsterSprites.add(SpriteFactory.createMonster(layer, monster)));
-        monsters.forEach((monster) -> spriteMonsters.add(SpriteFactory.createMonster(layer, monster)));
-
-        spritePlayer = SpriteFactory.createPlayer(layer, player);
     }
 
     protected final void buildAndSetGameLoop() {
