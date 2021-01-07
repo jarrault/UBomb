@@ -169,7 +169,7 @@ public class Player extends Character {
     private void removeLifeIfOnMonster() {
         for (Monster monster : this.game.getMonsters()) {
             if (monster.getPosition().equals(getPosition())) {
-                lives--;
+                this.inflictDamage(1);
                 checkIfPlayerLoose();
                 return;
             }
@@ -351,9 +351,8 @@ public class Player extends Character {
 
     @Override
     public void inflictDamage(int damage){
-        if(this.isInvicible){
+        if(!this.isInvicible){
             this.lives -= 1;
-        } else {
             this.isInvicible = true;
         }
     }
