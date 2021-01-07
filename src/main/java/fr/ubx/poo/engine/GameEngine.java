@@ -172,6 +172,11 @@ public final class GameEngine {
         root.getChildren().add(layer);
         statusBar = new StatusBar(root, sceneWidth, sceneHeight, game);
 
+        //update monsterts list
+        monsters.clear();//TODO maybe do it somewhere else // --- here to change when monterWorld refactor
+        monsters = this.game.getMonsters();
+
+
         // Create Monsters sprites
 //        monsters.forEach((monster) -> monsterSprites.add(SpriteFactory.createMonster(layer, monster)));
         monsters.forEach((monster) -> spriteMonsters.add(SpriteFactory.createMonster(layer, monster)));
@@ -189,7 +194,7 @@ public final class GameEngine {
 
         //when change to an other level (when pass through a door)
         if (this.game.isLevelChange()) {
-            monsters.clear();//TODO maybe do it somewhere else // --- here to change when monterWorld refactor
+//            monsters.clear();//TODO maybe do it somewhere else // --- here to change when monterWorld refactor
             this.game.setLevelChange(false);
             this.game.updateScene();
             updateScene();

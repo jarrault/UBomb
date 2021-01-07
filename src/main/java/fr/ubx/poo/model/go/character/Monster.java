@@ -55,6 +55,8 @@ public class Monster extends Character {
             timeStamp = convert;
 
             if (canMove(dir)) {
+                doMove(dir);
+
                 // to inflict damage to the player if it's possibleT
                 if(this.game.getPlayer().getPosition().equals(this.getPosition())){
                     this.game.inflictDamageToPlayer(1);
