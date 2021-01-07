@@ -51,12 +51,12 @@ public final class GameEngine {
         this.game = game;
         this.player = game.getPlayer();
         this.monsters = game.getMonsters();
-        initialize(stage, game);
+        this.stage = stage;
+        initialize();
         buildAndSetGameLoop();
     }
 
-    private void initialize(Stage stage, Game game) {
-        this.stage = stage;
+    private void initialize() {
         this.updateScene();
         this.updateSprites();
 
