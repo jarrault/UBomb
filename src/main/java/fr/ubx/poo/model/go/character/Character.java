@@ -10,6 +10,7 @@ public abstract class Character extends GameObject implements Movable {
 
     Direction direction;
     protected int lives = 1;
+    protected long timeStamp = 0;
 
     public Character(Game game, Position position) {
         super(game, position);

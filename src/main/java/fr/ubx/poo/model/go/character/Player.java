@@ -6,10 +6,7 @@ package fr.ubx.poo.model.go.character;
 
 import fr.ubx.poo.game.Direction;
 import fr.ubx.poo.game.Position;
-import fr.ubx.poo.game.WorldEntity;
-import fr.ubx.poo.model.Movable;
 import fr.ubx.poo.model.decor.*;
-import fr.ubx.poo.model.go.GameObject;
 import fr.ubx.poo.model.go.Bomb;
 import fr.ubx.poo.model.decor.Box;
 import fr.ubx.poo.model.decor.Decor;
@@ -32,17 +29,11 @@ public class Player extends Character {
   
     private int numberOfBombs = 1;
     private boolean bombRequested = false;
-    private int lives = 1;
-//    private boolean winner;
-//    private boolean updateSprites = false;
-//    private int numberOfBombs = 2;
     private int bombsRange = 1;
     private List<Bomb> bombs;
 
-    private long timeStamp = 0;
     private int countdown = 0;
-    private long creationDate;
-    private long livingTime = 1;
+    private long invicibilityTime = 1;
     private boolean isInvicible = false;
 
     public Player(Game game, Position position) {
@@ -82,9 +73,6 @@ public class Player extends Character {
     }
 
     public void requestBomb() {
-//        if (this.game.getWorld().get(getPosition()) instanceof Bomb) { //dont work but it's an idea like that
-//            this.direction = direction;
-//        }
         bombRequested = true;
     }
 
@@ -223,7 +211,6 @@ public class Player extends Character {
         }
 
         if(this.isInvicible) {
-//            System.out.println("----");
             checkInvicibility(now);
         }
 
@@ -237,15 +224,13 @@ public class Player extends Character {
         if (convert > timeStamp) { //TODO I don't know if it's a good idea to do it like that
             timeStamp = convert;
 
-            if (this.countdown == this.livingTime) {
+            if (this.countdown == this.invicibilityTime) {
                 this.isInvicible = false;
-//                System.out.println("not invicible");
 
                 this.timeStamp = 0;
                 this.countdown = 0;
             } else {
                 this.countdown++;
-//                System.out.println("is invicible");
             }
 
         }
@@ -340,7 +325,7 @@ public class Player extends Character {
     @Override
     public void inflictDamage(int damage){
         if(!this.isInvicible){
-            this.lives -= 1;
+            this.lives -= damage;
             this.isInvicible = true;
         }
     }

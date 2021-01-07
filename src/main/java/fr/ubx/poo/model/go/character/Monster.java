@@ -43,8 +43,6 @@ public class Monster extends Character {
 
     }
 
-    long timeStamp = 0;
-
     @Override
     public void update(long now) {
         Direction dir = Direction.random();
