@@ -39,19 +39,19 @@ public final class GameEngine {
     private final List<Sprite> sprites = new ArrayList<>();
     private final List<SpriteMonster> spriteMonsters = new ArrayList<>();
     private final List<SpriteBomb> spriteBombs = new ArrayList<>();
-    private List<Monster> monsters;
+    private List<Monster> monsters; //no need this is final ????
     private StatusBar statusBar;
     private Pane layer;
     private Input input;
     private Stage stage;
     private Sprite spritePlayer;
+//    private Sprite spriteMonster;
 
     public GameEngine(final String windowTitle, Game game, final Stage stage) {
         this.windowTitle = windowTitle;
         this.game = game;
         this.player = game.getPlayer();
         this.monsters = game.getMonsters();
-
         initialize(stage, game);
         buildAndSetGameLoop();
     }
@@ -76,11 +76,9 @@ public final class GameEngine {
         input = new Input(scene);
         root.getChildren().add(layer);
         statusBar = new StatusBar(root, sceneWidth, sceneHeight, game);
-
         // Create decor sprites
         game.getWorld().forEach((pos, d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
-
-        // Create monsters sprites
+//        monsters.forEach((monster) -> monsterSprites.add(SpriteFactory.createMonster(layer, monster)));
         monsters.forEach((monster) -> spriteMonsters.add(SpriteFactory.createMonster(layer, monster)));
 
         spritePlayer = SpriteFactory.createPlayer(layer, player);
@@ -125,7 +123,7 @@ public final class GameEngine {
             player.requestOpenDoor();
         }
         if (input.isBomb()) {
-            player.requestBomb();
+            this.player.requestBomb();
         }
 
         input.clear();
@@ -150,6 +148,12 @@ public final class GameEngine {
         }.start();
     }
 
+    private void updateSprites() {
+        sprites.forEach(Sprite::remove);
+        sprites.clear();
+        game.getWorld().forEach((pos, d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
+    }
+
     private void updateScene() {
         Group root = new Group();
         layer = new Pane();
@@ -168,19 +172,26 @@ public final class GameEngine {
         root.getChildren().add(layer);
         statusBar = new StatusBar(root, sceneWidth, sceneHeight, game);
 
-        //update monsters list
+        //update monsterts list
         monsters.clear();//TODO maybe do it somewhere else // --- here to change when monterWorld refactor
         monsters = this.game.getMonsters();
 
 
         // Create Monsters sprites
+//        monsters.forEach((monster) -> monsterSprites.add(SpriteFactory.createMonster(layer, monster)));
         monsters.forEach((monster) -> spriteMonsters.add(SpriteFactory.createMonster(layer, monster)));
 
-        // Create Player sprite
+        //Create Player sprite
         spritePlayer = SpriteFactory.createPlayer(layer, player);
     }
 
     private void update(long now) {
+        //TODO is it a good idea to factorise all player update of this method ?
+        /* if (player.isUpdateSprites()) {
+            updateSprites();
+            player.setUpdateSprites(false);
+        }*/
+
         //when change to an other level (when pass through a door)
         if (this.game.isLevelChange()) {
 //            monsters.clear();//TODO maybe do it somewhere else // --- here to change when monterWorld refactor
@@ -189,6 +200,12 @@ public final class GameEngine {
             updateScene();
             updateSprites();
         }
+
+        //TODO it's for why code under ?
+//        if (player.isUpdateSprites()) {
+//            updateSprites();
+//            player.setUpdateSprites(false);
+//        }
 
         player.update(now);
         checkIfGameIsOver();
@@ -200,29 +217,7 @@ public final class GameEngine {
     }
 
     /**
-     * Check if the player win the game or lose it
-     */
-    private void checkIfGameIsOver() {
-        if (!player.isAlive()) {
-            gameLoop.stop();
-            showMessage("Perdu!", Color.RED);
-        }
-
-        if (player.isWinner()) {
-            gameLoop.stop();
-            showMessage("Gagné", Color.BLUE);
-        }
-    }
-
-    private void updateSprites() {
-        sprites.forEach(Sprite::remove);
-        sprites.clear();
-        game.getWorld().forEach((pos, d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
-    }
-
-    /**
      * To update monsters' logic and sprites
-     *
      * @param now //TODO
      */
     private void updateMonsters(long now) {
@@ -249,10 +244,24 @@ public final class GameEngine {
     }
 
     /**
+     * to check if the player win the game or lose it
+     */
+    private void checkIfGameIsOver() {
+        if (!player.isAlive()) {
+            gameLoop.stop();
+            showMessage("Perdu!", Color.RED);
+        }
+        if (player.isWinner()) {
+            gameLoop.stop();
+            showMessage("Gagné", Color.BLUE);
+        }
+    }
+
+    /**
      * updateBombs loop over all the bombs and update it's states.
      * 1. Add the sprite of a bomb on the layer if a bomb is posed
      * 2. Remove the sprite of the bomb from the layer if it as explode
-     *
+
      * @param now //TODO
      */
     private void updateBombs(long now) {
@@ -278,7 +287,7 @@ public final class GameEngine {
                 bombSprite.ifPresent(Sprite::remove);
                 bombSprite.ifPresent(spriteBombs::remove);
 
-                //to update sprite of entities which could be destroyed by bomb
+                //to update sprite of entites which could be destroyed by bomb
                 updateSprites();
             }
         }
@@ -288,7 +297,6 @@ public final class GameEngine {
         sprites.forEach(Sprite::render);
         spriteMonsters.forEach(Sprite::render);
         spriteBombs.forEach(Sprite::render);
-
         // last rendering to have player in the foreground
         spritePlayer.render();
     }
