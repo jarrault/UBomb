@@ -19,6 +19,7 @@ import fr.ubx.poo.model.decor.bonus.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class Player extends Character {
 
@@ -37,6 +38,11 @@ public class Player extends Character {
     private int bombsRange = 1;
     private List<Bomb> bombs;
 
+    private long timeStamp = 0;
+    private int countdown = 0;
+    private long creationDate;
+    private long livingTime = 1;
+    private boolean isInvicible = false;
 
     public Player(Game game, Position position) {
         super(game, position);
@@ -162,7 +168,7 @@ public class Player extends Character {
     private void removeLifeIfOnMonster() {
         for (Monster monster : this.game.getMonsters()) {
             if (monster.getPosition().equals(getPosition())) {
-                lives--;
+                this.inflictDamage(1);
                 checkIfPlayerLoose();
                 return;
             }
@@ -213,23 +219,38 @@ public class Player extends Character {
             }
         }
 
+        if(this.isInvicible) {
+//            System.out.println("----");
+            checkInvicibility(now);
+        }
+
         bombRequested = false;
         moveRequested = false;
+    }
+
+    private void checkInvicibility(long now) {
+        long convert = TimeUnit.SECONDS.convert(now, TimeUnit.NANOSECONDS);// / 1__000__000__000;
+
+        if (convert > timeStamp) { //TODO I don't know if it's a good idea to do it like that
+            timeStamp = convert;
+
+            if (this.countdown == this.livingTime) {
+                this.isInvicible = false;
+//                System.out.println("not invicible");
+
+                this.timeStamp = 0;
+                this.countdown = 0;
+            } else {
+                this.countdown++;
+//                System.out.println("is invicible");
+            }
+
+        }
     }
 
     private void moveOnSpecialDecor() {
         Position myPos = this.getPosition();
         Decor decor = this.world.get(this.getPosition());
-
-//        if(decor instanceof DoorPrevOpened) {//TODO verify if there is a better way to check it
-//            //move to the previous level
-//            this.game.goPreviousLevel();
-//        }
-//
-//        if(decor instanceof DoorNextOpened) {//to do verify the checking
-//            //move to the next level
-//            this.game.goNextLevel();
-//        }
 
         if(decor instanceof Door){
             Door door = (Door)decor;
@@ -307,5 +328,13 @@ public class Player extends Character {
 
     public List<Bomb> getBombs() {
         return bombs;
+    }
+
+    @Override
+    public void inflictDamage(int damage){
+        if(!this.isInvicible){
+            this.lives -= 1;
+            this.isInvicible = true;
+        }
     }
 }
