@@ -59,9 +59,8 @@ public class Game {
         File folder = new File(worldPath);
         int lvl = 1;
 
-        //TODO change var names bellow
         for (final File fileEntry : folder.listFiles()) {
-            //is it necessary to check if the folder contanis other folder ?
+            //TODO is it necessary to check if the folder contanis other folder ?
 
             if (fileEntry.getName().contains(this.levelFilePrefix)) {
                 World world = new World(fileEntry.getPath());
@@ -126,7 +125,7 @@ public class Game {
         World world = this.getWorld();
 
         Position positionPlayer = null;
-        try { //TODO set player position when go to previous level
+        try {
             positionPlayer = world.findPlayer();
 
             this.player.setPosition(positionPlayer);

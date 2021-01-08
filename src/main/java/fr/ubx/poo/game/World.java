@@ -47,9 +47,6 @@ public class World {
         for (int x = 0; x < dimension.width; x++) {
             for (int y = 0; y < dimension.height; y++) {
 
-                //TODO do it better ( => not throw PlayerNotFoundExeception when it's not the first level)
-                // because the other level don't contain Player case
-
                 if(this.comeFromNextLevel) {
                     if (raw[y][x] == WorldEntity.DoorNextClosed) {
                         this.comeFromNextLevel = false;

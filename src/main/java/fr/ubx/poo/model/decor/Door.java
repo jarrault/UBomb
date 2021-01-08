@@ -18,10 +18,11 @@ public class Door extends Decor {
 
     /**
      * to open the door
+     *
      * @return true if it's correctly open
      */
-    public boolean openTheDoor(){
-        if(this.type == WorldEntity.DoorNextClosed) {
+    public boolean openTheDoor() {
+        if (this.type == WorldEntity.DoorNextClosed) {
             this.type = WorldEntity.DoorNextOpened;
             return true;
         } else {
@@ -37,27 +38,29 @@ public class Door extends Decor {
         return type;
     }
 
-    public boolean isOpen(){
-        if(this.type == WorldEntity.DoorNextClosed){
+    public boolean isOpen() {
+        if (this.type == WorldEntity.DoorNextClosed) {
             return false;
-        }else {
+        } else {
             return true;
         }
     }
 
-    public boolean isOpenToNextLevel(){
-        if(this.type == WorldEntity.DoorNextOpened){ //TODO try a tertier condition (with ?)
-            return true;
-        } else {
-            return false;
-        }
+    /**
+     * to check if the door is open to the next level
+     *
+     * @return true if the door is open to the next level
+     */
+    public boolean isOpenToNextLevel() {
+        return (this.type == WorldEntity.DoorNextOpened);
     }
 
-    public boolean isOpenToPreviousLevel(){
-        if(this.type == WorldEntity.DoorPrevOpened){ //TODO try a tertier condition (with ?)
-            return true;
-        } else {
-            return false;
-        }
+    /**
+     * to check if the door is open to the previous level
+     *
+     * @return true if the door is open to the previous level
+     */
+    public boolean isOpenToPreviousLevel() {
+        return (this.type == WorldEntity.DoorPrevOpened);
     }
 }

@@ -69,7 +69,6 @@ public class Player extends Character {
             }
 
         }
-        //TODO maybe a problem here when open the door, it is called twice ?
     }
 
     public void requestBomb() {
