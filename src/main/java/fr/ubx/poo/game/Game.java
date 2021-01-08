@@ -28,7 +28,7 @@ public class Game {
     public int initPlayerLives;
     public String levelFilePrefix; //is it necessary to be public ?
 
-    public Game(String worldPath) {
+    public Game(String worldPath) { //TODO can be quasi remplced by updateScene but new Player is problematic
         this.worldPath = worldPath;
         loadConfig(worldPath);
 

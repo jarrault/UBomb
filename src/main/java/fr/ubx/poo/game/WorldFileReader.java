@@ -22,12 +22,9 @@ public class WorldFileReader {
     }
 
     public WorldFileReader(String filepath) {
-        //TODO change filepath (which had to be dynamically change by level number)
-//        this.filepath = filepath + "/level1.txt";
-//        this.filepath = "D:\\Documents\\LICENCE\\L3\\POO\\projet-ubomb\\UBomb\\src\\main\\resources\\sample\\level2'.txt";
         this.filepath = filepath;
 
-        try {//TODO what does if it throws an exception ?
+        try {
             this.createWorldFromFile();
 
         } catch (IOException e) {
