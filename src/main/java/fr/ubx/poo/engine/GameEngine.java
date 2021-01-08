@@ -81,6 +81,10 @@ public final class GameEngine {
         };
     }
 
+    /**
+     * To process keys input
+     * @param now the timestamp of the current frame given in nanoseconds.
+     */
     private void processInput(long now) {
         if (input.isExit()) {
             gameLoop.stop();
@@ -154,20 +158,18 @@ public final class GameEngine {
         statusBar = new StatusBar(root, sceneWidth, sceneHeight, game);
 
         // Create Monsters sprites
-//        monsters.forEach((monster) -> monsterSprites.add(SpriteFactory.createMonster(layer, monster)));
         monsters.forEach((monster) -> spriteMonsters.add(SpriteFactory.createMonster(layer, monster)));
 
         //Create Player sprite
         spritePlayer = SpriteFactory.createPlayer(layer, player);
     }
 
+    /**
+     * To update the game at each frame
+     * @param now the timestamp of the current frame given in nanoseconds.
+     */
     private void update(long now) {
-        //TODO is it a good idea to factorise all player update of this method ?
-        /* if (player.isUpdateSprites()) {
-            updateSprites();
-            player.setUpdateSprites(false);
-        }*/
-
+        //update the game when the level changes
         if (this.game.isLevelChange()) {
             monsters.clear();//TODO maybe do it somewhere else
             this.game.setLevelChange(false);
@@ -175,11 +177,6 @@ public final class GameEngine {
             updateScene();
             updateSprites();
         }
-
-//        if (player.isUpdateSprites()) {
-//            updateSprites();
-//            player.setUpdateSprites(false);
-//        }
 
         player.update(now);
 
@@ -203,7 +200,7 @@ public final class GameEngine {
      * 1. Add the sprite of a bomb on the layer if a bomb is posed
      * 2. Remove the sprite of the bomb from the layer if it as explode
 
-     * @param now //TODO
+     * @param now the timestamp of the current frame given in nanoseconds.
      */
     private void updateBombs(long now) {
         Iterator<Bomb> bombIterator = this.player.getBombs().iterator();
@@ -211,14 +208,18 @@ public final class GameEngine {
         while (bombIterator.hasNext()) {
             Bomb bomb = bombIterator.next();
 
+            //update bomb's logic
             bomb.update(now);
 
+            //if need to create the bomb
             if (!bomb.isDisplayed()) {
                 spriteBombs.add(SpriteFactory.createBomb(layer, bomb));
                 bomb.setDisplayed(true);
             }
 
+            //if the bomb ends and need to be removed
             if (bomb.isExplode()) {
+                //to remove from the bombs' list
                 bombIterator.remove();
 
                 // Get the sprite that match with the bomb that explode
