@@ -75,7 +75,6 @@ public final class GameEngine {
         statusBar = new StatusBar(root, sceneWidth, sceneHeight, game);
         // Create decor sprites
         game.getWorld().forEach((pos, d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
-//        monsters.forEach((monster) -> monsterSprites.add(SpriteFactory.createMonster(layer, monster)));
         monsters.forEach((monster) -> spriteMonsters.add(SpriteFactory.createMonster(layer, monster)));
 
         spritePlayer = SpriteFactory.createPlayer(layer, player);
@@ -170,14 +169,11 @@ public final class GameEngine {
         statusBar = new StatusBar(root, sceneWidth, sceneHeight, game);
 
         //update monsterts list
-        System.out.println("before => " + this.monsters.size());
-        this.monsters.clear();//TODO maybe do it somewhere else // --- here to change when monterWorld refactor
+//        this.monsters.clear();//TODO maybe do it somewhere else // --- here to change when monterWorld refactor
         this.monsters = new ArrayList<>(this.game.getMonsters());
-        System.out.println("after => " + this.monsters.size() + " / get : " + this.game.getMonsters().size());
 
 
         // Create Monsters sprites
-//        monsters.forEach((monster) -> monsterSprites.add(SpriteFactory.createMonster(layer, monster)));
         monsters.forEach((monster) -> spriteMonsters.add(SpriteFactory.createMonster(layer, monster)));
 
         //Create Player sprite
@@ -228,9 +224,8 @@ public final class GameEngine {
             monster.update(now);
 
             if (!monster.isAlive()) {
-//                System.out.println("b> " + this.game.getWorld().findMonsters().size());
-                this.game.getWorld().removeMonsterPosition(monster.getPosition());
-//                System.out.println("a> " + this.game.getWorld().findMonsters().size());
+//                this.game.getWorld().removeMonsterPosition(monster.getPosition());
+                this.game.removeMonster(monster);
 
                 monsterIterator.remove();
 

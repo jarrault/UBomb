@@ -25,11 +25,13 @@ public class Monster extends Character {
     public boolean canMove(Direction direction) {
         Position nextPos = direction.nextPosition(getPosition());
 
-        if (!this.world.isInside(nextPos)) {
+//        if (!this.world.isInside(nextPos)) {
+        if (!this.game.getWorld().isInside(nextPos)) {
             return false;
         }
 
-        Decor decor = this.world.get(nextPos);
+//        Decor decor = this.world.get(nextPos);
+        Decor decor = this.game.getWorld().get(nextPos);
 
         if (decor != null) {
             return decor.isTraversable();
