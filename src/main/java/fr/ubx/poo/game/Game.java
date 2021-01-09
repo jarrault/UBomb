@@ -9,9 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 import fr.ubx.poo.model.go.character.Monster;
 import fr.ubx.poo.model.go.character.Player;
@@ -23,12 +21,17 @@ public class Game {
     private boolean isLevelChange;
 
     private final Player player;
-    private final ArrayList<Monster> monsters = new ArrayList<>();
+
+//    private final ArrayList<Monster> monsters = new ArrayList<>();
+    private List<Monster> monsters; //TODO is it necessary it's been final ?
+
     private final String worldPath;
     public int initPlayerLives;
     public String levelFilePrefix; //is it necessary to be public ?
 
-    public Game(String worldPath) { //TODO can be quasi remplced by updateScene but new Player is problematic
+    private Map<Integer, List<Monster>> monstersLists;
+
+    public Game(String worldPath) {
         this.worldPath = worldPath;
         loadConfig(worldPath);
 
@@ -37,6 +40,9 @@ public class Game {
         this.isLevelChange = false;
         this.worlds = initializeWorlds(worldPath);
         World world = this.getWorld();
+
+        //initialize monsters lists
+        this.monstersLists = initializeMonstersLists();
 
         Position positionPlayer = null;
         try {
@@ -47,10 +53,30 @@ public class Game {
             throw new RuntimeException(e);
         }
 
-        ArrayList<Position> monstersPositions = world.findMonsters();
-        for (Position monsterPosition : monstersPositions) {
-            monsters.add(new Monster(this, monsterPosition));
+//        ArrayList<Position> monstersPositions = world.findMonsters();
+//        for (Position monsterPosition : monstersPositions) {
+//            monsters.add(new Monster(this, monsterPosition));
+//        }
+
+        this.monsters = this.monstersLists.get(world.getLevelNumber());
+    }
+
+    /**
+     * To initialize lists of monsters according to levels
+     * @return a map of monsters lists with level number as key
+     */
+    private Map<Integer, List<Monster>> initializeMonstersLists() {
+        Map<Integer, List<Monster>> newMonstersLists = new HashMap<>();
+
+        for(World world : this.worlds){
+            List<Monster> tmpMonsterList = new ArrayList<>();
+            for(Position position : world.findMonsters()){
+                tmpMonsterList.add(new Monster(this, position));
+            }
+            newMonstersLists.put(world.getLevelNumber(), tmpMonsterList);
         }
+
+        return newMonstersLists;
     }
 
     private List<World> initializeWorlds(String worldPath) {
@@ -98,7 +124,9 @@ public class Game {
         return this.player;
     }
 
-    public ArrayList<Monster> getMonsters() {
+    public List<Monster> getMonsters() {
+//        System.out.println("Game.getMonsters ==> " + this.monsters + " ( " + this + " )");
+//        System.out.println("Game.getMonsters ==> " + this.monsters );
         return monsters;
     }
 
@@ -132,20 +160,26 @@ public class Game {
 //            player = new Player(this, positionPlayer);
 
         } catch (PositionNotFoundException e) {
-            System.err.println("Position not found : " + e.getLocalizedMessage());
+//            System.err.println("Position not found : " + e.getLocalizedMessage());
             throw new RuntimeException(e);
         }
 
-        ArrayList<Position> monstersPositions = world.findMonsters();
-        for (Position monsterPosition : monstersPositions) {
-            monsters.add(new Monster(this, monsterPosition));
-        }
+//        System.out.println("b> " + this.monsters.size());
+        this.monsters = this.monstersLists.get(this.getWorld().getLevelNumber());
+//        System.out.println("a> " + this.monsters.size());
     }
 
     public void inflictDamageToPlayer(int damage) { //TODO I'm not sure it's a good way to do it
         this.getPlayer().inflictDamage(damage);
         this.getPlayer().update(0);
+    }
 
+    public void inflictDamageToMonster(Monster monster, int damage) { //TODO I'm not sure it's a good way to do it
+        monster.inflictDamage(damage);
+        monster.update(0);
+    }
 
+    public void removeMonster(Monster monster) {
+        this.monsters.remove(monster);
     }
 }

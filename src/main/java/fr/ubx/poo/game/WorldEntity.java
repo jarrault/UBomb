@@ -24,7 +24,7 @@ public enum WorldEntity {
     BombRangeDec('<'),
     BombNumberInc('+'),
     BombNumberDec('-')
-        ;
+    ;
 
 
     private char getCode() {
@@ -37,6 +37,11 @@ public enum WorldEntity {
         this.code = code;
     }
 
+    /**
+     * To get the WorldEntity according to a char
+     * @param code char corresponding to the wanted WorldEntity
+     * @return WorldEntity according to the char
+     */
     public static Optional<WorldEntity> fromCode(char code) {
         return Arrays.stream(values())
                 .filter(e->e.acceptCode(code))

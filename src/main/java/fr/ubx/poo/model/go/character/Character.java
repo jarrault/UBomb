@@ -9,6 +9,8 @@ import fr.ubx.poo.model.go.GameObject;
 public abstract class Character extends GameObject implements Movable {
 
     Direction direction;
+
+    protected boolean alive = true;
     protected int lives = 1;
     protected long timeStamp = 0;
 
@@ -31,5 +33,15 @@ public abstract class Character extends GameObject implements Movable {
 
     public void inflictDamage(int damage){
         this.lives -= 1;
+    }
+
+    protected void checkIfCharacterIsDead() {
+        if (lives == 0) {
+            this.alive = false;
+        }
+    }
+
+    public boolean isAlive() {
+        return alive;
     }
 }

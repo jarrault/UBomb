@@ -6,21 +6,38 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Read level's config file to setup World
+ */
 public class WorldFileReader {
 
     private String filepath;
-
     private WorldEntity[][] entities;
     private Dimension dimension;
 
+    /**
+     * Getter for entities
+     *
+     * @return world's entity matrix
+     */
     public WorldEntity[][] getEntities() {
         return entities;
     }
 
+    /**
+     * Getter for wordl's dimension
+     *
+     * @return world's dimension
+     */
     public Dimension getDimension() {
         return dimension;
     }
 
+    /**
+     * Constructor
+     *
+     * @param filepath path to the level's config file
+     */
     public WorldFileReader(String filepath) {
         this.filepath = filepath;
 
@@ -32,6 +49,11 @@ public class WorldFileReader {
         }
     }
 
+    /**
+     * To read the file in order to setup a new World
+     *
+     * @throws IOException If an I/O error occurs
+     */
     private void createWorldFromFile() throws IOException {
         //Variables
         BufferedReader reader = new BufferedReader(new FileReader(this.filepath));

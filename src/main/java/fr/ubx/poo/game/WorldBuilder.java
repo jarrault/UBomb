@@ -14,6 +14,13 @@ public class WorldBuilder {
     private WorldBuilder() {
     }
 
+    /**
+     * To build a grid according to an entites' matrix
+     *
+     * @param raw       entities' matrix
+     * @param dimension dimension of the grid
+     * @return a map which represents a grid
+     */
     public static Map<Position, Decor> build(WorldEntity[][] raw, Dimension dimension) {
         WorldBuilder builder = new WorldBuilder();
         for (int x = 0; x < dimension.width; x++) {
@@ -27,10 +34,24 @@ public class WorldBuilder {
         return builder.grid;
     }
 
+    /**
+     * To build a grid according to an entites' matrix
+     *
+     * @param worldFileReader class which read World's attributes from a file
+     * @return a map which represents a grid
+     */
     public static Map<Position, Decor> build(WorldFileReader worldFileReader) {
         return WorldBuilder.build(worldFileReader.getEntities(), worldFileReader.getDimension());
     }
 
+    //TODO is it a good idea to code build(worldPath) which create a WorldFileReader object to prevent World initiate one ?
+
+    /**
+     * To get the correct decor according to an entity
+     *
+     * @param entity wanted entity
+     * @return correct decor according to the entity
+     */
     private static Decor processEntity(WorldEntity entity) {
         switch (entity) {
             case Stone:
@@ -52,6 +73,7 @@ public class WorldBuilder {
             case BombRangeInc:
                 return new BombRangeInc();
 
+            //the tree "door entities" are represented by the same Decor class
             case DoorNextClosed:
             case DoorNextOpened:
             case DoorPrevOpened:

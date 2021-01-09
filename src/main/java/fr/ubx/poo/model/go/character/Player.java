@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit;
 
 public class Player extends Character {
 
-    private boolean alive = true;
     private boolean moveRequested = false;
 
     private int keys = 0;
@@ -170,9 +169,7 @@ public class Player extends Character {
     }
 
     private void checkIfPlayerLoose() {
-        if (lives == 0) {
-            this.alive = false;
-        }
+        this.checkIfCharacterIsDead();
     }
 
     private void checkIfContainsBonus() {
@@ -275,10 +272,6 @@ public class Player extends Character {
 
     public boolean isWinner() {
         return winner;
-    }
-
-    public boolean isAlive() {
-        return alive;
     }
 
     public boolean isUpdateSprites() {

@@ -38,6 +38,11 @@ public class Position {
         return "(" + x + "," + y + ")";
     }
 
+    /**
+     * To check if this position is inside the world's dimension
+     * @param d world's dimension
+     * @return true if this position is inside the world's dimension
+     */
     public boolean inside(Dimension d) {
         return x >= 0 && x < d.width && y >= 0 && y < d.height;
     }

@@ -57,7 +57,7 @@ public final class SpriteFactory {
         return new SpritePlayer(layer, player);
     }
 
-    public static Sprite createMonster(Pane layer, Monster monster) {
+    public static SpriteMonster createMonster(Pane layer, Monster monster) {
         return new SpriteMonster(layer, monster);
     }
 

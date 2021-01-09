@@ -4,16 +4,14 @@
 
 package fr.ubx.poo.engine;
 
-import fr.ubx.poo.game.Direction;
-import fr.ubx.poo.game.PositionNotFoundException;
-import fr.ubx.poo.game.World;
+import fr.ubx.poo.game.*;
 import fr.ubx.poo.model.go.Bomb;
 import fr.ubx.poo.model.go.character.Monster;
 import fr.ubx.poo.view.sprite.Sprite;
 import fr.ubx.poo.view.sprite.SpriteBomb;
 import fr.ubx.poo.view.sprite.SpriteFactory;
-import fr.ubx.poo.game.Game;
 import fr.ubx.poo.model.go.character.Player;
+import fr.ubx.poo.view.sprite.SpriteMonster;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.scene.Group;
@@ -36,23 +34,28 @@ public final class GameEngine {
     private final Game game;
     private final Player player;
     private final List<Sprite> sprites = new ArrayList<>();
-    private final List<Sprite> spriteMonsters = new ArrayList<>();
+    private final List<SpriteMonster> spriteMonsters = new ArrayList<>();
     private final List<SpriteBomb> spriteBombs = new ArrayList<>();
-    private final ArrayList<Monster> monsters;
+    private List<Monster> monsters; //no need this is final ????
     private StatusBar statusBar;
     private Pane layer;
     private Input input;
     private Stage stage;
     private Sprite spritePlayer;
-    private Sprite spriteMonster;
+//    private Sprite spriteMonster;
 
     public GameEngine(final String windowTitle, Game game, final Stage stage) {
         this.windowTitle = windowTitle;
         this.game = game;
         this.player = game.getPlayer();
+//<<<<<<< HEAD
         this.monsters = game.getMonsters();
         this.stage = stage;
         initialize();
+//=======
+//        this.monsters = new ArrayList<>(game.getMonsters());
+//        initialize(stage, game);
+////>>>>>>> gestion_monstre
         buildAndSetGameLoop();
     }
 
@@ -63,6 +66,18 @@ public final class GameEngine {
         stage.setTitle(windowTitle);
         stage.setResizable(false);
         stage.show();
+//<<<<<<< HEAD
+//=======
+//
+//        input = new Input(scene);
+//        root.getChildren().add(layer);
+//        statusBar = new StatusBar(root, sceneWidth, sceneHeight, game);
+//        // Create decor sprites
+//        game.getWorld().forEach((pos, d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
+//        monsters.forEach((monster) -> spriteMonsters.add(SpriteFactory.createMonster(layer, monster)));
+//
+//        spritePlayer = SpriteFactory.createPlayer(layer, player);
+//>>>>>>> gestion_monstre
     }
 
     protected final void buildAndSetGameLoop() {
@@ -157,6 +172,11 @@ public final class GameEngine {
         root.getChildren().add(layer);
         statusBar = new StatusBar(root, sceneWidth, sceneHeight, game);
 
+        //update monsterts list
+//        this.monsters.clear();//TODO maybe do it somewhere else // --- here to change when monterWorld refactor
+        this.monsters = new ArrayList<>(this.game.getMonsters());
+
+
         // Create Monsters sprites
         monsters.forEach((monster) -> spriteMonsters.add(SpriteFactory.createMonster(layer, monster)));
 
@@ -171,17 +191,60 @@ public final class GameEngine {
     private void update(long now) {
         //update the game when the level changes
         if (this.game.isLevelChange()) {
-            monsters.clear();//TODO maybe do it somewhere else
+//            monsters.clear();//TODO maybe do it somewhere else // --- here to change when monterWorld refactor
             this.game.setLevelChange(false);
             this.game.updateScene();
             updateScene();
             updateSprites();
         }
 
+        //TODO it's for why code under ?
+//        if (player.isUpdateSprites()) {
+//            updateSprites();
+//            player.setUpdateSprites(false);
+//        }
+
         player.update(now);
+        checkIfGameIsOver();
 
-        monsters.forEach((monster) -> monster.update(now) );
+        updateMonsters(now);
+        updateBombs(now);
 
+        updateSprites();
+    }
+
+    /**
+     * To update monsters' logic and sprites
+     * @param now //TODO
+     */
+    private void updateMonsters(long now) {
+        Iterator<Monster> monsterIterator = this.monsters.iterator();
+
+        while (monsterIterator.hasNext()) {
+            Monster monster = monsterIterator.next();
+
+            monster.update(now);
+
+            if (!monster.isAlive()) {
+//                this.game.getWorld().removeMonsterPosition(monster.getPosition());
+                this.game.removeMonster(monster);
+
+                monsterIterator.remove();
+
+                // Get the sprite that match with the monster which died
+                Optional<SpriteMonster> monsterSprite = spriteMonsters.stream().filter(m -> m.getGo().equals(monster)).findFirst();
+
+                // Remove the sprite from the layer and remove it from the Sprites list
+                monsterSprite.ifPresent(Sprite::remove);
+                monsterSprite.ifPresent(spriteMonsters::remove);
+            }
+        }
+    }
+
+    /**
+     * to check if the player win the game or lose it
+     */
+    private void checkIfGameIsOver() {
         if (!player.isAlive()) {
             gameLoop.stop();
             showMessage("Perdu!", Color.RED);
@@ -190,9 +253,6 @@ public final class GameEngine {
             gameLoop.stop();
             showMessage("Gagné", Color.BLUE);
         }
-
-        updateBombs(now);
-        updateSprites();
     }
 
     /**
