@@ -106,6 +106,7 @@ public class World {
 //        return monstersPositions;
         //this is old version of the method, I keep it because it's a temporary modification
 
+//        System.out.println("findMonsters -> " + this.monsterPositionList);
         return this.monsterPositionList;
     }
 
@@ -129,7 +130,9 @@ public class World {
     }
 
     public void removeMonsterPosition(Position position){
-        this.monsterPositionList.remove(position);
+//        System.out.println("remove monster pos => " + position);
+        this.monsterPositionList.remove(position); //TODO it don't work because when monster died, he is not at the same postion than when we create him
+//        System.out.println("oui");
     }
 
 

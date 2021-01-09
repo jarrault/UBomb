@@ -4,15 +4,12 @@
 
 package fr.ubx.poo.engine;
 
-import fr.ubx.poo.game.Direction;
-import fr.ubx.poo.game.PositionNotFoundException;
-import fr.ubx.poo.game.World;
+import fr.ubx.poo.game.*;
 import fr.ubx.poo.model.go.Bomb;
 import fr.ubx.poo.model.go.character.Monster;
 import fr.ubx.poo.view.sprite.Sprite;
 import fr.ubx.poo.view.sprite.SpriteBomb;
 import fr.ubx.poo.view.sprite.SpriteFactory;
-import fr.ubx.poo.game.Game;
 import fr.ubx.poo.model.go.character.Player;
 import fr.ubx.poo.view.sprite.SpriteMonster;
 import javafx.animation.AnimationTimer;
@@ -51,7 +48,7 @@ public final class GameEngine {
         this.windowTitle = windowTitle;
         this.game = game;
         this.player = game.getPlayer();
-        this.monsters = game.getMonsters();
+        this.monsters = new ArrayList<>(game.getMonsters());
         initialize(stage, game);
         buildAndSetGameLoop();
     }
@@ -173,8 +170,10 @@ public final class GameEngine {
         statusBar = new StatusBar(root, sceneWidth, sceneHeight, game);
 
         //update monsterts list
-        monsters.clear();//TODO maybe do it somewhere else // --- here to change when monterWorld refactor
-        monsters = this.game.getMonsters();
+        System.out.println("before => " + this.monsters.size());
+        this.monsters.clear();//TODO maybe do it somewhere else // --- here to change when monterWorld refactor
+        this.monsters = new ArrayList<>(this.game.getMonsters());
+        System.out.println("after => " + this.monsters.size() + " / get : " + this.game.getMonsters().size());
 
 
         // Create Monsters sprites
@@ -229,7 +228,9 @@ public final class GameEngine {
             monster.update(now);
 
             if (!monster.isAlive()) {
+//                System.out.println("b> " + this.game.getWorld().findMonsters().size());
                 this.game.getWorld().removeMonsterPosition(monster.getPosition());
+//                System.out.println("a> " + this.game.getWorld().findMonsters().size());
 
                 monsterIterator.remove();
 

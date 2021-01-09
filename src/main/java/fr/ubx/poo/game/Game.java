@@ -100,6 +100,8 @@ public class Game {
     }
 
     public ArrayList<Monster> getMonsters() {
+//        System.out.println("Game.getMonsters ==> " + this.monsters + " ( " + this + " )");
+//        System.out.println("Game.getMonsters ==> " + this.monsters );
         return monsters;
     }
 
@@ -133,14 +135,18 @@ public class Game {
 //            player = new Player(this, positionPlayer);
 
         } catch (PositionNotFoundException e) {
-            System.err.println("Position not found : " + e.getLocalizedMessage());
+//            System.err.println("Position not found : " + e.getLocalizedMessage());
             throw new RuntimeException(e);
         }
 
         ArrayList<Position> monstersPositions = world.findMonsters();
+
+//        System.out.println("Game.updateScene before -> " + monstersPositions + " / " + this.monsters.size());
+//        this.monsters.clear();
         for (Position monsterPosition : monstersPositions) {
             monsters.add(new Monster(this, monsterPosition));
         }
+//        System.out.println("Game.updateScene after -> " + monstersPositions + " / " + this.monsters.size());
     }
 
     public void inflictDamageToPlayer(int damage) { //TODO I'm not sure it's a good way to do it
