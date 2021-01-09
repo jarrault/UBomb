@@ -23,7 +23,7 @@ public class Game {
     private final Player player;
 
 //    private final ArrayList<Monster> monsters = new ArrayList<>();
-    private List<Monster> monsters;
+    private List<Monster> monsters; //TODO is it necessary it's been final ?
 
     private final String worldPath;
     public int initPlayerLives;
@@ -165,15 +165,9 @@ public class Game {
             throw new RuntimeException(e);
         }
 
-        ArrayList<Position> monstersPositions = world.findMonsters();
-
-////        this.monsters.clear();
-//        for (Position monsterPosition : monstersPositions) {
-//            monsters.add(new Monster(this, monsterPosition));
-//        }
-        System.out.println("b> " + this.monsters.size());
+//        System.out.println("b> " + this.monsters.size());
         this.monsters = this.monstersLists.get(this.getWorld().getLevelNumber());
-        System.out.println("a> " + this.monsters.size());
+//        System.out.println("a> " + this.monsters.size());
     }
 
     public void inflictDamageToPlayer(int damage) { //TODO I'm not sure it's a good way to do it

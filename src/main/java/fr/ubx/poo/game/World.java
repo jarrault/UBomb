@@ -106,7 +106,6 @@ public class World {
 //        return monstersPositions;
         //this is old version of the method, I keep it because it's a temporary modification
 
-//        System.out.println("findMonsters -> " + this.monsterPositionList);
         return this.monsterPositionList;
     }
 
