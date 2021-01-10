@@ -27,10 +27,12 @@ public class Monster extends Character {
         Position nextPos = direction.nextPosition(getPosition());
         Decor decor = this.world.get(nextPos);
 
+        // Monster can move on doors
         if (decor instanceof Door) {
             return false;
         }
 
+        // Monsters can't go on each other
         for (Monster monster : this.game.getMonsters()) {
             if (monster.getPosition().equals(nextPos)) {
                 return false;

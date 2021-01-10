@@ -32,7 +32,7 @@ public abstract class Character extends GameObject implements Movable {
     /**
      * @param nextPosition corresponds to the next position from the character in the direction of the character
      *
-     * @return false if the next position is not empty or outside the world
+     * @return false if the next position is not empty or outside the world, true otherwise
      */
     protected boolean nextPositionInWorldAndEmpty(Position nextPosition) {
         if (!this.world.isInside(nextPosition)) {

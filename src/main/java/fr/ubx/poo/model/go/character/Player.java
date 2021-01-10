@@ -46,8 +46,12 @@ public class Player extends Character {
         moveRequested = true;
     }
 
+    public void requestBomb() {
+        bombRequested = true;
+    }
+
     /**
-     * to try open a door when ENTER input
+     * To try open a door when ENTER input
      */
     public void requestOpenDoor() {
         Position myPos = this.getPosition();
@@ -62,10 +66,6 @@ public class Player extends Character {
         }
     }
 
-    public void requestBomb() {
-        bombRequested = true;
-    }
-
     @Override
     public boolean canMove(Direction direction) {
         Position nextPos = direction.nextPosition(getPosition());
@@ -78,6 +78,15 @@ public class Player extends Character {
         return nextPositionInWorldAndEmpty(nextPos);
     }
 
+    /**
+     * Check if the box can be moved and move it if so
+     *
+     * @param direction current direction of the player
+     * @param nextPos next position from the direction of the player
+     * @param decor box to move
+     *
+     * @return true if the box can be moved, false otherwise
+     */
     private boolean canMoveBox(Direction direction, Position nextPos, Decor decor) {
         Position newPosition = direction.nextPosition(nextPos);
 
@@ -101,12 +110,15 @@ public class Player extends Character {
         return true;
     }
 
+    /**
+     * @return true if the player can put a bomb, false otherwise
+     */
     public boolean canPutBomb() {
-        if(this.numberOfBombs == 0){
+        if (this.numberOfBombs == 0) { // check if the player have enough bombs
             return false;
         }
 
-        for (Bomb bomb : bombs) {
+        for (Bomb bomb : bombs) { // check if there is not already a bomb on the position
             if (bomb.getPosition().equals(getPosition())) {
                 return false;
             }
@@ -115,17 +127,27 @@ public class Player extends Character {
         return true;
     }
 
+    /**
+     * @param now time when the bomb is posed
+     *
+     * @return the bomb the player posed, null if the player can't place it
+     */
     public Bomb doPutBomb(long now) {
         if (!canPutBomb()) {
             return null;
         }
 
         Bomb bomb = new Bomb(game, getPosition(), now, this.bombsRange);
-        this.numberOfBombs--;
         bombs.add(bomb);
+
+        this.numberOfBombs--;
+
         return bomb;
     }
 
+    /**
+     * Check if the player is on a monster, if so the player lose one live
+     */
     private void removeLifeIfOnMonster() {
         for (Monster monster : this.game.getMonsters()) {
             if (monster.getPosition().equals(getPosition())) {
@@ -136,18 +158,23 @@ public class Player extends Character {
         }
     }
 
+    /**
+     * Check if the player is on the Princess position, if so set the player to winner
+     */
     private void checkIfPlayerWin() {
         if (this.world.get(getPosition()) instanceof Princess) {
             this.winner = true;
         }
     }
 
+    /**
+     * Check if the current position contains a bonus, if so execute the bonus action and removed it from the board
+     */
     private void checkIfContainsBonus() {
         Decor decor = world.get(getPosition());
 
         if (decor instanceof Bonus) {
             ((Bonus) decor).doAction(this);
-
             world.clear(getPosition());
         }
     }
@@ -166,17 +193,17 @@ public class Player extends Character {
             }
         }
 
-        if(this.game.isLevelChange()){
+        if (this.game.isLevelChange()) {
             this.world = this.game.getWorld();
         }
 
-        if (bombRequested){
-            if(canPutBomb()){
+        if (bombRequested) {
+            if (canPutBomb()) {
                 doPutBomb(now);
             }
         }
 
-        if(this.isInvincible) {
+        if (this.isInvincible) {
             checkInvincibility(now);
         }
 
@@ -184,6 +211,11 @@ public class Player extends Character {
         moveRequested = false;
     }
 
+    /**
+     * Check if the player is currently invincible
+     *
+     * @param now time when the check is made
+     */
     private void checkInvincibility(long now) {
         long convert = TimeUnit.SECONDS.convert(now, TimeUnit.NANOSECONDS);// / 1__000__000__000;
 
@@ -193,41 +225,47 @@ public class Player extends Character {
             long invincibilityTime = 1;
             if (this.countdown == invincibilityTime) {
                 this.isInvincible = false;
-
                 this.timeStamp = 0;
                 this.countdown = 0;
             } else {
                 this.countdown++;
             }
-
         }
     }
 
+    /**
+     * Check if the player is on a Door or a key and perform the corresponding action in that case
+     */
     private void moveOnSpecialDecor() {
         Position myPos = this.getPosition();
         Decor decor = this.world.get(this.getPosition());
 
-        if(decor instanceof Door){
-            Door door = (Door)decor;
+        if (decor instanceof Door) {
+            Door door = (Door) decor;
 
-            if(door.isOpenToNextLevel()){
+            if (door.isOpenToNextLevel()) {
                 this.game.goNextLevel();
 
-            } else if(door.isOpenToPreviousLevel()){
+            } else if (door.isOpenToPreviousLevel()) {
                 this.game.goPreviousLevel();
             }
         }
 
-        if(decor instanceof Key){
+        if (decor instanceof Key) {
             this.keys++;
             this.world.clear(myPos);
         }
 
     }
 
+    /**
+     * Inflict damage to the player if he is not invincible
+     *
+     * @param damage amount of damage
+     */
     @Override
-    public void inflictDamage(int damage){
-        if(!this.isInvincible){
+    public void inflictDamage(int damage) {
+        if (!this.isInvincible) {
             this.lives -= damage;
             this.isInvincible = true;
         }
@@ -236,7 +274,7 @@ public class Player extends Character {
     /**
      * To add one bomb in number of allowed bomb in the player status
      */
-    public void incrementBombNumber(){
+    public void incrementBombNumber() {
         this.numberOfBombs++;
     }
 
