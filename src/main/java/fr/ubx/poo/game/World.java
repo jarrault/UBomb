@@ -7,7 +7,6 @@ package fr.ubx.poo.game;
 import fr.ubx.poo.model.go.Bomb;
 import fr.ubx.poo.model.decor.Decor;
 import fr.ubx.poo.model.decor.Door;
-import fr.ubx.poo.model.decor.DoorNextOpened;
 import fr.ubx.poo.model.go.character.Monster;
 
 import java.util.ArrayList;
@@ -49,14 +48,16 @@ public class World {
         this.monsterPositionList = this.initializeMonstersPosition();
     }
 
+    /**
+     * To get postion of the player
+     * @return postion of the player
+     * @throws PositionNotFoundException if the player is not found
+     */
     public Position findPlayer() throws PositionNotFoundException {
 //        debug_showGrid();
 
         for (int x = 0; x < dimension.width; x++) {
             for (int y = 0; y < dimension.height; y++) {
-
-                //TODO do it better ( => not throw PlayerNotFoundExeception when it's not the first level)
-                // because the other level don't contain Player case
 
                 if(this.comeFromNextLevel) {
                     if (raw[y][x] == WorldEntity.DoorNextClosed) {
@@ -91,6 +92,10 @@ public class World {
     }
 
 
+    /**
+     * To find positions of monsters
+     * @return list of monsters' position
+     */
     public ArrayList<Position> findMonsters() {
 //        ArrayList<Position> monstersPositions = new ArrayList<>();
 //
@@ -109,6 +114,10 @@ public class World {
         return this.monsterPositionList;
     }
 
+    /**
+     * To initialize list of the monsters' position
+     * @return list of the monsters' position
+     */
     public ArrayList<Position> initializeMonstersPosition() {
         ArrayList<Position> monstersPositions = new ArrayList<>();
 
@@ -129,30 +138,52 @@ public class World {
     }
 
     public void removeMonsterPosition(Position position){
-        this.monsterPositionList.remove(position);
+//        System.out.println("remove monster pos => " + position);
+        this.monsterPositionList.remove(position); //TODO it don't work because when monster died, he is not at the same postion than when we create him
+//        System.out.println("oui");
     }
 
-
+    /**
+     * To get the decor according to the position
+     * @param position position of the decor
+     * @return decor according to the position
+     */
     public Decor get(Position position) {
         return grid.get(position);
     }
 
+    /**
+     * To set a decor in the grid
+     * @param position position of the decor
+     * @param decor the decor
+     */
     public void set(Position position, Decor decor) {
         grid.put(position, decor);
     }
 
+    /**
+     * To clear/remove a decor in the grid
+     * @param position position of the concerned decor
+     */
     public void clear(Position position) {
         grid.remove(position);
     }
 
+    //TODO javadoc
     public void forEach(BiConsumer<Position, Decor> fn) {
         grid.forEach(fn);
     }
 
+    //TODO javadoc
     public Collection<Decor> values() {
         return grid.values();
     }
 
+    /**
+     * To check if the position is inside the screen
+     * @param position concerned position
+     * @return true if the position is inside the screen
+     */
     public boolean isInside(Position position) {
         return position.inside(this.dimension);
     }
@@ -161,26 +192,33 @@ public class World {
         return grid.get(position) == null;
     }
 
-//    public void openDoor(Position pos) {
+    /**
+     * To process the door's opening
+     * @param door concerned door
+     */
     public void openDoor(Door door) {
-//        //TODO is it necessary to check if the Position is a door ?
-//        //remove the closed door
-//        this.clear(pos);
-//
-//        //set the new door
-//        this.set(pos, new DoorNextOpened());
-
         door.openTheDoor();
     }
 
+    /**
+     * Getter of the level number
+     * @return level number
+     */
     public int getLevelNumber() {
         return levelNumber;
     }
 
+    /**
+     * Setter of the level number
+     * @param levelNumber new value
+     */
     public void setLevelNumber(int levelNumber) {
         this.levelNumber = levelNumber;
     }
 
+    /**
+     * To process the event that player come from the next level
+     */
     public void comeFromNextLevel() {
         this.comeFromNextLevel = true;
     }

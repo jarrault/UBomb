@@ -9,9 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 import fr.ubx.poo.model.go.character.Monster;
 import fr.ubx.poo.model.go.character.Player;
@@ -23,10 +21,15 @@ public class Game {
     private boolean isLevelChange;
 
     private final Player player;
-    private final ArrayList<Monster> monsters = new ArrayList<>();
+
+    //    private final ArrayList<Monster> monsters = new ArrayList<>();
+    private List<Monster> monsters; //TODO is it necessary it's been final ?
+
     private final String worldPath;
     public int initPlayerLives;
     public String levelFilePrefix; //is it necessary to be public ?
+
+    private Map<Integer, List<Monster>> monstersLists;
 
     public Game(String worldPath) {
         this.worldPath = worldPath;
@@ -38,6 +41,9 @@ public class Game {
         this.worlds = initializeWorlds(worldPath);
         World world = this.getWorld();
 
+        //initialize monsters lists
+        this.monstersLists = initializeMonstersLists();
+
         Position positionPlayer = null;
         try {
             positionPlayer = world.findPlayer();
@@ -47,21 +53,47 @@ public class Game {
             throw new RuntimeException(e);
         }
 
-        ArrayList<Position> monstersPositions = world.findMonsters();
-        for (Position monsterPosition : monstersPositions) {
-            monsters.add(new Monster(this, monsterPosition));
-        }
+//        ArrayList<Position> monstersPositions = world.findMonsters();
+//        for (Position monsterPosition : monstersPositions) {
+//            monsters.add(new Monster(this, monsterPosition));
+//        }
+
+        this.monsters = this.monstersLists.get(world.getLevelNumber());
     }
 
+    /**
+     * To initialize lists of monsters according to levels
+     *
+     * @return a map of monsters lists with level number as key
+     */
+    private Map<Integer, List<Monster>> initializeMonstersLists() {
+        Map<Integer, List<Monster>> newMonstersLists = new HashMap<>();
+
+        for (World world : this.worlds) {
+            List<Monster> tmpMonsterList = new ArrayList<>();
+            for (Position position : world.findMonsters()) {
+                tmpMonsterList.add(new Monster(this, position));
+            }
+            newMonstersLists.put(world.getLevelNumber(), tmpMonsterList);
+        }
+
+        return newMonstersLists;
+    }
+
+    /**
+     * To initialze worlds list
+     *
+     * @param worldPath path of the config files
+     * @return list of worlds corresponding to the config files
+     */
     private List<World> initializeWorlds(String worldPath) {
         List<World> worldsList = new ArrayList<>();
 
         File folder = new File(worldPath);
         int lvl = 1;
 
-        //TODO change var names bellow
         for (final File fileEntry : folder.listFiles()) {
-            //is it necessary to check if the folder contanis other folder ?
+            //TODO is it necessary to check if the folder contanis other folder ?
 
             if (fileEntry.getName().contains(this.levelFilePrefix)) {
                 World world = new World(fileEntry.getPath());
@@ -75,10 +107,20 @@ public class Game {
         return worldsList;
     }
 
+    /**
+     * Getter for initial player lives number
+     *
+     * @return initial Player lives number
+     */
     public int getInitPlayerLives() {
         return initPlayerLives;
     }
 
+    /**
+     * To load config properties file
+     *
+     * @param path path of the file
+     */
     private void loadConfig(String path) {
         try (InputStream input = new FileInputStream(new File(path, "config.properties"))) {
             Properties prop = new Properties();
@@ -91,65 +133,118 @@ public class Game {
         }
     }
 
+    /**
+     * Getter for the current world
+     *
+     * @return the current world
+     */
     public World getWorld() {
         return this.worlds.get(this.level);
     }
 
+    /**
+     * Getter for the player object
+     *
+     * @return the player
+     */
     public Player getPlayer() {
         return this.player;
     }
 
-    public ArrayList<Monster> getMonsters() {
+    /**
+     * Getter for the monsters list
+     *
+     * @return monsters list
+     */
+    public List<Monster> getMonsters() {
         return monsters;
     }
 
+    /**
+     * To process level modifications when go to the previous level
+     */
     public void goPreviousLevel() {
         this.isLevelChange = true;
         this.level--;
         this.getWorld().comeFromNextLevel();
     }
 
+    /**
+     * To process level modifications when go to the next level
+     */
     public void goNextLevel() {
         this.isLevelChange = true;
         this.level++;
     }
 
+    /**
+     * To check if the level changes
+     *
+     * @return true if the level changes
+     */
     public boolean isLevelChange() {
         return isLevelChange;
     }
 
+    /**
+     * To set boolean which check if the level changes
+     *
+     * @param levelChange new value
+     */
     public void setLevelChange(boolean levelChange) {
         isLevelChange = levelChange;
     }
 
+    /**
+     * To update the scene and needed attribute for the scene
+     */
     public void updateScene() {
         World world = this.getWorld();
 
         Position positionPlayer = null;
-        try { //TODO set player position when go to previous level
+        try {
             positionPlayer = world.findPlayer();
 
             this.player.setPosition(positionPlayer);
 //            player = new Player(this, positionPlayer);
 
         } catch (PositionNotFoundException e) {
-            System.err.println("Position not found : " + e.getLocalizedMessage());
+//            System.err.println("Position not found : " + e.getLocalizedMessage());
             throw new RuntimeException(e);
         }
 
-        ArrayList<Position> monstersPositions = world.findMonsters();
-        for (Position monsterPosition : monstersPositions) {
-            monsters.add(new Monster(this, monsterPosition));
-        }
+        this.monsters = this.monstersLists.get(this.getWorld().getLevelNumber());
     }
 
+    /**
+     * To process damage caused to the player
+     *
+     * @param damage value of damage
+     */
     public void inflictDamageToPlayer(int damage) { //TODO I'm not sure it's a good way to do it
         this.getPlayer().inflictDamage(damage);
+        //to update player logic
         this.getPlayer().update(0);
     }
 
+    /**
+     * To process damage caused to a monster
+     *
+     * @param monster the monster concerned
+     * @param damage  value of damage
+     */
     public void inflictDamageToMonster(Monster monster, int damage) { //TODO I'm not sure it's a good way to do it
         monster.inflictDamage(damage);
+        //to update monster logic
         monster.update(0);
+    }
+
+    /**
+     * To remove the monster from the list
+     *
+     * @param monster the monster concerned
+     */
+    public void removeMonster(Monster monster) {
+        this.monsters.remove(monster);
     }
 }

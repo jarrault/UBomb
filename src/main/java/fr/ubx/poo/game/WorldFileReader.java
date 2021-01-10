@@ -39,10 +39,9 @@ public class WorldFileReader {
      * @param filepath path to the level's config file
      */
     public WorldFileReader(String filepath) {
-        //TODO change filepath (which had to be dynamically change by level number)
         this.filepath = filepath;
 
-        try {//TODO what does if it throws an exception ?
+        try {
             this.createWorldFromFile();
 
         } catch (IOException e) {

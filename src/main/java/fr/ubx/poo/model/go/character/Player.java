@@ -6,10 +6,7 @@ package fr.ubx.poo.model.go.character;
 
 import fr.ubx.poo.game.Direction;
 import fr.ubx.poo.game.Position;
-import fr.ubx.poo.game.WorldEntity;
-import fr.ubx.poo.model.Movable;
 import fr.ubx.poo.model.decor.*;
-import fr.ubx.poo.model.go.GameObject;
 import fr.ubx.poo.model.go.Bomb;
 import fr.ubx.poo.model.decor.Box;
 import fr.ubx.poo.model.decor.Decor;
@@ -27,31 +24,19 @@ public class Player extends Character {
 
     private int keys = 0;
     private boolean winner;
-    private boolean updateSprites = false;
-  
+
     private int numberOfBombs = 1;
     private boolean bombRequested = false;
-//    private int lives = 1;
-//    private boolean winner;
-//    private boolean updateSprites = false;
-//    private int numberOfBombs = 2;
     private int bombsRange = 1;
-    private List<Bomb> bombs;
+    private final List<Bomb> bombs;
 
-    private long timeStamp = 0;
     private int countdown = 0;
-    private long creationDate;
-    private long livingTime = 1;
-    private boolean isInvicible = false;
+    private boolean isInvincible = false;
 
     public Player(Game game, Position position) {
         super(game, position);
         this.lives = game.getInitPlayerLives();
         this.bombs = new ArrayList<>();
-    }
-
-    public int getLives() {
-        return lives;
     }
 
     public void requestMove(Direction direction) {
@@ -71,41 +56,26 @@ public class Player extends Character {
         if (decor instanceof Door) {//TODO verify if there is a better way to check it
             Door door = (Door) decor;
             if (!door.isOpen() && keys >= 1) {//open the door only if the player have keys
-                this.updateSprites = true;
                 this.world.openDoor(door); // it's to verify if the door correctly open (without checking the keys)
                 this.keys--;
             }
-
         }
-        //TODO maybe a problem here when open the door, it is called twice ?
     }
 
     public void requestBomb() {
-//        if (this.game.getWorld().get(getPosition()) instanceof Bomb) { //dont work but it's an idea like that
-//            this.direction = direction;
-//        }
         bombRequested = true;
     }
 
     @Override
     public boolean canMove(Direction direction) {
         Position nextPos = direction.nextPosition(getPosition());
-
-        if (!this.world.isInside(nextPos)) {
-            return false;
-        }
-
         Decor decor = this.world.get(nextPos);
 
         if (decor instanceof Box) {
             return canMoveBox(direction, nextPos, decor);
         }
 
-        if (decor != null) {
-            return decor.isTraversable();
-        }
-
-        return true;
+        return nextPositionInWorldAndEmpty(nextPos);
     }
 
     private boolean canMoveBox(Direction direction, Position nextPos, Decor decor) {
@@ -115,7 +85,7 @@ public class Player extends Character {
             return false;
         }
 
-        if (this.world.get(newPosition) != null) {
+        if (!this.world.isEmpty(newPosition)) {
             return false;
         }
 
@@ -127,7 +97,6 @@ public class Player extends Character {
 
         world.clear(nextPos);
         world.set(newPosition, decor);
-        updateSprites = true;
 
         return true;
     }
@@ -154,22 +123,14 @@ public class Player extends Character {
         Bomb bomb = new Bomb(game, getPosition(), now, this.bombsRange);
         this.numberOfBombs--;
         bombs.add(bomb);
-        updateSprites = true;
         return bomb;
-    }
-
-    public void doMove(Direction direction) {
-        Position nextPos = direction.nextPosition(getPosition());
-        setPosition(nextPos);
-
-        moveOnSpecialDecor();
     }
 
     private void removeLifeIfOnMonster() {
         for (Monster monster : this.game.getMonsters()) {
             if (monster.getPosition().equals(getPosition())) {
                 this.inflictDamage(1);
-                checkIfPlayerLoose();
+                checkIfCharacterIsDead();
                 return;
             }
         }
@@ -181,10 +142,6 @@ public class Player extends Character {
         }
     }
 
-    private void checkIfPlayerLoose() {
-        this.checkIfCharacterIsDead();
-    }
-
     private void checkIfContainsBonus() {
         Decor decor = world.get(getPosition());
 
@@ -192,13 +149,12 @@ public class Player extends Character {
             ((Bonus) decor).doAction(this);
 
             world.clear(getPosition());
-            updateSprites = true;
         }
     }
 
     @Override
     public void update(long now) {
-        checkIfPlayerLoose();//
+        checkIfCharacterIsDead();
 
         if (moveRequested) {
             if (canMove(direction)) {
@@ -206,6 +162,7 @@ public class Player extends Character {
                 removeLifeIfOnMonster();
                 checkIfPlayerWin();
                 checkIfContainsBonus();
+                moveOnSpecialDecor();
             }
         }
 
@@ -219,30 +176,28 @@ public class Player extends Character {
             }
         }
 
-        if(this.isInvicible) {
-//            System.out.println("----");
-            checkInvicibility(now);
+        if(this.isInvincible) {
+            checkInvincibility(now);
         }
 
         bombRequested = false;
         moveRequested = false;
     }
 
-    private void checkInvicibility(long now) {
+    private void checkInvincibility(long now) {
         long convert = TimeUnit.SECONDS.convert(now, TimeUnit.NANOSECONDS);// / 1__000__000__000;
 
         if (convert > timeStamp) { //TODO I don't know if it's a good idea to do it like that
             timeStamp = convert;
 
-            if (this.countdown == this.livingTime) {
-                this.isInvicible = false;
-//                System.out.println("not invicible");
+            long invincibilityTime = 1;
+            if (this.countdown == invincibilityTime) {
+                this.isInvincible = false;
 
                 this.timeStamp = 0;
                 this.countdown = 0;
             } else {
                 this.countdown++;
-//                System.out.println("is invicible");
             }
 
         }
@@ -266,17 +221,16 @@ public class Player extends Character {
         if(decor instanceof Key){
             this.keys++;
             this.world.clear(myPos);
-            this.updateSprites = true;
         }
 
     }
 
-    public void addBomb(Bomb bomb){
-        this.bombs.add(bomb);
-    }
-
-    public void removeBomb(Bomb bomb){
-        this.bombs.remove(bomb);
+    @Override
+    public void inflictDamage(int damage){
+        if(!this.isInvincible){
+            this.lives -= damage;
+            this.isInvincible = true;
+        }
     }
 
     /**
@@ -286,20 +240,12 @@ public class Player extends Character {
         this.numberOfBombs++;
     }
 
+    public int getKeys() {
+        return keys;
+    }
+
     public boolean isWinner() {
         return winner;
-    }
-
-    public boolean isUpdateSprites() {
-        return updateSprites;
-    }
-
-    public void setUpdateSprites(boolean updateSprites) {
-        this.updateSprites = updateSprites;
-    }
-
-    public void setBombs(List<Bomb> bomb){
-        this.bombs = bomb;
     }
 
     public int getNumberOfBombs() {
@@ -314,27 +260,19 @@ public class Player extends Character {
         return bombsRange;
     }
 
-    public int getKeys() {
-        return keys;
-    }
-
     public void setBombsRange(int bombsRange) {
         this.bombsRange = bombsRange;
-    }
-
-    public void setLives(int lives) {
-        this.lives = lives;
     }
 
     public List<Bomb> getBombs() {
         return bombs;
     }
 
-    @Override
-    public void inflictDamage(int damage){
-        if(!this.isInvicible){
-            this.lives -= 1;
-            this.isInvicible = true;
-        }
+    public int getLives() {
+        return this.lives;
+    }
+
+    public void setLives(int lives) {
+        this.lives = lives;
     }
 }

@@ -4,15 +4,12 @@
 
 package fr.ubx.poo.engine;
 
-import fr.ubx.poo.game.Direction;
-import fr.ubx.poo.game.PositionNotFoundException;
-import fr.ubx.poo.game.World;
+import fr.ubx.poo.game.*;
 import fr.ubx.poo.model.go.Bomb;
 import fr.ubx.poo.model.go.character.Monster;
 import fr.ubx.poo.view.sprite.Sprite;
 import fr.ubx.poo.view.sprite.SpriteBomb;
 import fr.ubx.poo.view.sprite.SpriteFactory;
-import fr.ubx.poo.game.Game;
 import fr.ubx.poo.model.go.character.Player;
 import fr.ubx.poo.view.sprite.SpriteMonster;
 import javafx.animation.AnimationTimer;
@@ -45,45 +42,32 @@ public final class GameEngine {
     private Input input;
     private Stage stage;
     private Sprite spritePlayer;
-//    private Sprite spriteMonster;
 
     public GameEngine(final String windowTitle, Game game, final Stage stage) {
         this.windowTitle = windowTitle;
         this.game = game;
         this.player = game.getPlayer();
         this.monsters = game.getMonsters();
-        initialize(stage, game);
+        this.stage = stage;
+        initialize();
         buildAndSetGameLoop();
     }
 
-    private void initialize(Stage stage, Game game) {
-        this.stage = stage;
-        Group root = new Group();
-        layer = new Pane();
-
-        int height = game.getWorld().dimension.height;
-        int width = game.getWorld().dimension.width;
-        int sceneWidth = width * Sprite.size;
-        int sceneHeight = height * Sprite.size;
-        Scene scene = new Scene(root, sceneWidth, sceneHeight + StatusBar.height);
-        scene.getStylesheets().add(getClass().getResource("/css/application.css").toExternalForm());
+    /**
+     * To initialize importants elements (example : Scene, sprites, ...)
+     */
+    private void initialize() {
+        this.updateScene();
+        this.updateSprites();
 
         stage.setTitle(windowTitle);
-        stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
-
-        input = new Input(scene);
-        root.getChildren().add(layer);
-        statusBar = new StatusBar(root, sceneWidth, sceneHeight, game);
-        // Create decor sprites
-        game.getWorld().forEach((pos, d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
-//        monsters.forEach((monster) -> monsterSprites.add(SpriteFactory.createMonster(layer, monster)));
-        monsters.forEach((monster) -> spriteMonsters.add(SpriteFactory.createMonster(layer, monster)));
-
-        spritePlayer = SpriteFactory.createPlayer(layer, player);
     }
 
+    /**
+     * To build and set game loop
+     */
     protected final void buildAndSetGameLoop() {
         gameLoop = new AnimationTimer() {
             public void handle(long now) {
@@ -100,6 +84,11 @@ public final class GameEngine {
         };
     }
 
+    /**
+     * To process keys input
+     *
+     * @param now the timestamp of the current frame given in nanoseconds.
+     */
     private void processInput(long now) {
         if (input.isExit()) {
             gameLoop.stop();
@@ -129,6 +118,12 @@ public final class GameEngine {
         input.clear();
     }
 
+    /**
+     * To show ending message
+     *
+     * @param msg   content of the message
+     * @param color color of the message
+     */
     private void showMessage(String msg, Color color) {
         Text waitingForKey = new Text(msg);
         waitingForKey.setTextAlignment(TextAlignment.CENTER);
@@ -148,12 +143,18 @@ public final class GameEngine {
         }.start();
     }
 
+    /**
+     * To update common sprites ( but not monsters, player and bombs sprites)
+     */
     private void updateSprites() {
         sprites.forEach(Sprite::remove);
         sprites.clear();
         game.getWorld().forEach((pos, d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
     }
 
+    /**
+     * To update the scene
+     */
     private void updateScene() {
         Group root = new Group();
         layer = new Pane();
@@ -173,28 +174,25 @@ public final class GameEngine {
         statusBar = new StatusBar(root, sceneWidth, sceneHeight, game);
 
         //update monsterts list
-        monsters.clear();//TODO maybe do it somewhere else // --- here to change when monterWorld refactor
-        monsters = this.game.getMonsters();
+        this.monsters = new ArrayList<>(this.game.getMonsters());
 
 
         // Create Monsters sprites
-//        monsters.forEach((monster) -> monsterSprites.add(SpriteFactory.createMonster(layer, monster)));
+        this.spriteMonsters.clear();
         monsters.forEach((monster) -> spriteMonsters.add(SpriteFactory.createMonster(layer, monster)));
 
         //Create Player sprite
         spritePlayer = SpriteFactory.createPlayer(layer, player);
     }
 
+    /**
+     * To update the game at each frame
+     *
+     * @param now the timestamp of the current frame given in nanoseconds.
+     */
     private void update(long now) {
-        //TODO is it a good idea to factorise all player update of this method ?
-        /* if (player.isUpdateSprites()) {
-            updateSprites();
-            player.setUpdateSprites(false);
-        }*/
-
-        //when change to an other level (when pass through a door)
+        //update the game when the level changes
         if (this.game.isLevelChange()) {
-//            monsters.clear();//TODO maybe do it somewhere else // --- here to change when monterWorld refactor
             this.game.setLevelChange(false);
             this.game.updateScene();
             updateScene();
@@ -218,7 +216,8 @@ public final class GameEngine {
 
     /**
      * To update monsters' logic and sprites
-     * @param now //TODO
+     *
+     * @param now the timestamp of the current frame given in nanoseconds.
      */
     private void updateMonsters(long now) {
         Iterator<Monster> monsterIterator = this.monsters.iterator();
@@ -229,7 +228,7 @@ public final class GameEngine {
             monster.update(now);
 
             if (!monster.isAlive()) {
-                this.game.getWorld().removeMonsterPosition(monster.getPosition());
+                this.game.removeMonster(monster);
 
                 monsterIterator.remove();
 
@@ -261,8 +260,8 @@ public final class GameEngine {
      * updateBombs loop over all the bombs and update it's states.
      * 1. Add the sprite of a bomb on the layer if a bomb is posed
      * 2. Remove the sprite of the bomb from the layer if it as explode
-
-     * @param now //TODO
+     *
+     * @param now the timestamp of the current frame given in nanoseconds.
      */
     private void updateBombs(long now) {
         Iterator<Bomb> bombIterator = this.player.getBombs().iterator();
@@ -270,14 +269,18 @@ public final class GameEngine {
         while (bombIterator.hasNext()) {
             Bomb bomb = bombIterator.next();
 
+            //update bomb's logic
             bomb.update(now);
 
+            //if need to create the bomb
             if (!bomb.isDisplayed()) {
                 spriteBombs.add(SpriteFactory.createBomb(layer, bomb));
                 bomb.setDisplayed(true);
             }
 
+            //if the bomb ends and need to be removed
             if (bomb.isExplode()) {
+                //to remove from the bombs' list
                 bombIterator.remove();
 
                 // Get the sprite that match with the bomb that explode
@@ -293,6 +296,9 @@ public final class GameEngine {
         }
     }
 
+    /**
+     * To render sprites
+     */
     private void render() {
         sprites.forEach(Sprite::render);
         spriteMonsters.forEach(Sprite::render);
@@ -301,6 +307,9 @@ public final class GameEngine {
         spritePlayer.render();
     }
 
+    /**
+     * to start the game loop
+     */
     public void start() {
         gameLoop.start();
     }

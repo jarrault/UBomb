@@ -118,16 +118,15 @@ public class Bomb extends GameObject {
                         this.world.clear(pos);
 
                         makeExplosion(pos);
+                        this.checkIfInflictDamageToCharacter(pos);
 
                     } else if (!decor.isDestructible()) {
                         isExplosionObstacled = true;
                     }
                 } else if ((decor == null) && (!isExplosionObstacled)) {
                     makeExplosion(pos);
+                    this.checkIfInflictDamageToCharacter(pos);
                 }
-
-                this.checkIfInflictDamageToCharacter(pos);
-
 
             }
         }
