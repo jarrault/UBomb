@@ -35,13 +35,13 @@ public abstract class Character extends GameObject implements Movable {
      * @return false if the next position is not empty or outside the world, true otherwise
      */
     protected boolean nextPositionInWorldAndEmpty(Position nextPosition) {
-        if (!this.world.isInside(nextPosition)) {
+        if (!this.game.getWorld().isInside(nextPosition)) {
             return false;
         }
 
-        Decor decor = this.world.get(nextPosition);
+        Decor decor = this.game.getWorld().get(nextPosition);
 
-        if (!this.world.isEmpty(nextPosition)) {
+        if (!this.game.getWorld().isEmpty(nextPosition)) {
             return decor.isTraversable();
         }
 

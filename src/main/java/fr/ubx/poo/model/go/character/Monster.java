@@ -25,7 +25,7 @@ public class Monster extends Character {
     @Override
     public boolean canMove(Direction direction) {
         Position nextPos = direction.nextPosition(getPosition());
-        Decor decor = this.world.get(nextPos);
+        Decor decor = this.game.getWorld().get(nextPos);
 
         // Monster can move on doors
         if (decor instanceof Door) {
