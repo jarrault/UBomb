@@ -174,6 +174,7 @@ public final class GameEngine {
 
 
         // Create Monsters sprites
+        this.spriteMonsters.clear();
         monsters.forEach((monster) -> spriteMonsters.add(SpriteFactory.createMonster(layer, monster)));
 
         //Create Player sprite
