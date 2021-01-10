@@ -53,6 +53,9 @@ public final class GameEngine {
         buildAndSetGameLoop();
     }
 
+    /**
+     * To initialize importants elements (example : Scene, sprites, ...)
+     */
     private void initialize() {
         this.updateScene();
         this.updateSprites();
@@ -62,6 +65,9 @@ public final class GameEngine {
         stage.show();
     }
 
+    /**
+     * To build and set game loop
+     */
     protected final void buildAndSetGameLoop() {
         gameLoop = new AnimationTimer() {
             public void handle(long now) {
@@ -80,6 +86,7 @@ public final class GameEngine {
 
     /**
      * To process keys input
+     *
      * @param now the timestamp of the current frame given in nanoseconds.
      */
     private void processInput(long now) {
@@ -111,6 +118,12 @@ public final class GameEngine {
         input.clear();
     }
 
+    /**
+     * To show ending message
+     *
+     * @param msg   content of the message
+     * @param color color of the message
+     */
     private void showMessage(String msg, Color color) {
         Text waitingForKey = new Text(msg);
         waitingForKey.setTextAlignment(TextAlignment.CENTER);
@@ -130,12 +143,18 @@ public final class GameEngine {
         }.start();
     }
 
+    /**
+     * To update common sprites ( but not monsters, player and bombs sprites)
+     */
     private void updateSprites() {
         sprites.forEach(Sprite::remove);
         sprites.clear();
         game.getWorld().forEach((pos, d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
     }
 
+    /**
+     * To update the scene
+     */
     private void updateScene() {
         Group root = new Group();
         layer = new Pane();
@@ -168,6 +187,7 @@ public final class GameEngine {
 
     /**
      * To update the game at each frame
+     *
      * @param now the timestamp of the current frame given in nanoseconds.
      */
     private void update(long now) {
@@ -196,7 +216,8 @@ public final class GameEngine {
 
     /**
      * To update monsters' logic and sprites
-     * @param now //TODO
+     *
+     * @param now the timestamp of the current frame given in nanoseconds.
      */
     private void updateMonsters(long now) {
         Iterator<Monster> monsterIterator = this.monsters.iterator();
@@ -239,7 +260,7 @@ public final class GameEngine {
      * updateBombs loop over all the bombs and update it's states.
      * 1. Add the sprite of a bomb on the layer if a bomb is posed
      * 2. Remove the sprite of the bomb from the layer if it as explode
-
+     *
      * @param now the timestamp of the current frame given in nanoseconds.
      */
     private void updateBombs(long now) {
@@ -275,6 +296,9 @@ public final class GameEngine {
         }
     }
 
+    /**
+     * To render sprites
+     */
     private void render() {
         sprites.forEach(Sprite::render);
         spriteMonsters.forEach(Sprite::render);
@@ -283,6 +307,9 @@ public final class GameEngine {
         spritePlayer.render();
     }
 
+    /**
+     * to start the game loop
+     */
     public void start() {
         gameLoop.start();
     }

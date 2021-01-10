@@ -22,7 +22,7 @@ public class Game {
 
     private final Player player;
 
-//    private final ArrayList<Monster> monsters = new ArrayList<>();
+    //    private final ArrayList<Monster> monsters = new ArrayList<>();
     private List<Monster> monsters; //TODO is it necessary it's been final ?
 
     private final String worldPath;
@@ -63,14 +63,15 @@ public class Game {
 
     /**
      * To initialize lists of monsters according to levels
+     *
      * @return a map of monsters lists with level number as key
      */
     private Map<Integer, List<Monster>> initializeMonstersLists() {
         Map<Integer, List<Monster>> newMonstersLists = new HashMap<>();
 
-        for(World world : this.worlds){
+        for (World world : this.worlds) {
             List<Monster> tmpMonsterList = new ArrayList<>();
-            for(Position position : world.findMonsters()){
+            for (Position position : world.findMonsters()) {
                 tmpMonsterList.add(new Monster(this, position));
             }
             newMonstersLists.put(world.getLevelNumber(), tmpMonsterList);
@@ -79,6 +80,12 @@ public class Game {
         return newMonstersLists;
     }
 
+    /**
+     * To initialze worlds list
+     *
+     * @param worldPath path of the config files
+     * @return list of worlds corresponding to the config files
+     */
     private List<World> initializeWorlds(String worldPath) {
         List<World> worldsList = new ArrayList<>();
 
@@ -100,10 +107,20 @@ public class Game {
         return worldsList;
     }
 
+    /**
+     * Getter for initial player lives number
+     *
+     * @return initial Player lives number
+     */
     public int getInitPlayerLives() {
         return initPlayerLives;
     }
 
+    /**
+     * To load config properties file
+     *
+     * @param path path of the file
+     */
     private void loadConfig(String path) {
         try (InputStream input = new FileInputStream(new File(path, "config.properties"))) {
             Properties prop = new Properties();
@@ -116,37 +133,71 @@ public class Game {
         }
     }
 
+    /**
+     * Getter for the current world
+     *
+     * @return the current world
+     */
     public World getWorld() {
         return this.worlds.get(this.level);
     }
 
+    /**
+     * Getter for the player object
+     *
+     * @return the player
+     */
     public Player getPlayer() {
         return this.player;
     }
 
+    /**
+     * Getter for the monsters list
+     *
+     * @return monsters list
+     */
     public List<Monster> getMonsters() {
         return monsters;
     }
 
+    /**
+     * To process level modifications when go to the previous level
+     */
     public void goPreviousLevel() {
         this.isLevelChange = true;
         this.level--;
         this.getWorld().comeFromNextLevel();
     }
 
+    /**
+     * To process level modifications when go to the next level
+     */
     public void goNextLevel() {
         this.isLevelChange = true;
         this.level++;
     }
 
+    /**
+     * To check if the level changes
+     *
+     * @return true if the level changes
+     */
     public boolean isLevelChange() {
         return isLevelChange;
     }
 
+    /**
+     * To set boolean which check if the level changes
+     *
+     * @param levelChange new value
+     */
     public void setLevelChange(boolean levelChange) {
         isLevelChange = levelChange;
     }
 
+    /**
+     * To update the scene and needed attribute for the scene
+     */
     public void updateScene() {
         World world = this.getWorld();
 
@@ -165,16 +216,34 @@ public class Game {
         this.monsters = this.monstersLists.get(this.getWorld().getLevelNumber());
     }
 
+    /**
+     * To process damage caused to the player
+     *
+     * @param damage value of damage
+     */
     public void inflictDamageToPlayer(int damage) { //TODO I'm not sure it's a good way to do it
         this.getPlayer().inflictDamage(damage);
+        //to update player logic
         this.getPlayer().update(0);
     }
 
+    /**
+     * To process damage caused to a monster
+     *
+     * @param monster the monster concerned
+     * @param damage  value of damage
+     */
     public void inflictDamageToMonster(Monster monster, int damage) { //TODO I'm not sure it's a good way to do it
         monster.inflictDamage(damage);
+        //to update monster logic
         monster.update(0);
     }
 
+    /**
+     * To remove the monster from the list
+     *
+     * @param monster the monster concerned
+     */
     public void removeMonster(Monster monster) {
         this.monsters.remove(monster);
     }

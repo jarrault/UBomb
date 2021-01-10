@@ -48,6 +48,11 @@ public class World {
         this.monsterPositionList = this.initializeMonstersPosition();
     }
 
+    /**
+     * To get postion of the player
+     * @return postion of the player
+     * @throws PositionNotFoundException if the player is not found
+     */
     public Position findPlayer() throws PositionNotFoundException {
 //        debug_showGrid();
 
@@ -87,6 +92,10 @@ public class World {
     }
 
 
+    /**
+     * To find positions of monsters
+     * @return list of monsters' position
+     */
     public ArrayList<Position> findMonsters() {
 //        ArrayList<Position> monstersPositions = new ArrayList<>();
 //
@@ -105,6 +114,10 @@ public class World {
         return this.monsterPositionList;
     }
 
+    /**
+     * To initialize list of the monsters' position
+     * @return list of the monsters' position
+     */
     public ArrayList<Position> initializeMonstersPosition() {
         ArrayList<Position> monstersPositions = new ArrayList<>();
 
@@ -130,27 +143,47 @@ public class World {
 //        System.out.println("oui");
     }
 
-
+    /**
+     * To get the decor according to the position
+     * @param position position of the decor
+     * @return decor according to the position
+     */
     public Decor get(Position position) {
         return grid.get(position);
     }
 
+    /**
+     * To set a decor in the grid
+     * @param position position of the decor
+     * @param decor the decor
+     */
     public void set(Position position, Decor decor) {
         grid.put(position, decor);
     }
 
+    /**
+     * To clear/remove a decor in the grid
+     * @param position position of the concerned decor
+     */
     public void clear(Position position) {
         grid.remove(position);
     }
 
+    //TODO javadoc
     public void forEach(BiConsumer<Position, Decor> fn) {
         grid.forEach(fn);
     }
 
+    //TODO javadoc
     public Collection<Decor> values() {
         return grid.values();
     }
 
+    /**
+     * To check if the position is inside the screen
+     * @param position concerned position
+     * @return true if the position is inside the screen
+     */
     public boolean isInside(Position position) {
         return position.inside(this.dimension);
     }
@@ -159,18 +192,33 @@ public class World {
         return grid.get(position) == null;
     }
 
+    /**
+     * To process the door's opening
+     * @param door concerned door
+     */
     public void openDoor(Door door) {
         door.openTheDoor();
     }
 
+    /**
+     * Getter of the level number
+     * @return level number
+     */
     public int getLevelNumber() {
         return levelNumber;
     }
 
+    /**
+     * Setter of the level number
+     * @param levelNumber new value
+     */
     public void setLevelNumber(int levelNumber) {
         this.levelNumber = levelNumber;
     }
 
+    /**
+     * To process the event that player come from the next level
+     */
     public void comeFromNextLevel() {
         this.comeFromNextLevel = true;
     }
