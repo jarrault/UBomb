@@ -7,11 +7,8 @@ package fr.ubx.poo.engine;
 import fr.ubx.poo.game.*;
 import fr.ubx.poo.model.go.Bomb;
 import fr.ubx.poo.model.go.character.Monster;
-import fr.ubx.poo.view.sprite.Sprite;
-import fr.ubx.poo.view.sprite.SpriteBomb;
-import fr.ubx.poo.view.sprite.SpriteFactory;
+import fr.ubx.poo.view.sprite.*;
 import fr.ubx.poo.model.go.character.Player;
-import fr.ubx.poo.view.sprite.SpriteMonster;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.scene.Group;
@@ -41,7 +38,7 @@ public final class GameEngine {
     private Pane layer;
     private Input input;
     private final Stage stage;
-    private Sprite spritePlayer;
+    private SpritePlayer spritePlayer;
 
     public GameEngine(final String windowTitle, Game game, final Stage stage) {
         this.windowTitle = windowTitle;
@@ -181,7 +178,7 @@ public final class GameEngine {
         monsters.forEach((monster) -> spriteMonsters.add(SpriteFactory.createMonster(layer, monster)));
 
         //Create Player sprite
-        spritePlayer = SpriteFactory.createPlayer(layer, player);
+        spritePlayer = (SpritePlayer) SpriteFactory.createPlayer(layer, player);
     }
 
     /**
@@ -297,7 +294,11 @@ public final class GameEngine {
         spriteBombs.forEach(Sprite::render);
 
         // last rendering to have player in the foreground
-        spritePlayer.render();
+        if (player.isInvincible()) {
+            spritePlayer.render(0.5);
+        } else {
+            spritePlayer.render();
+        }
     }
 
     /**

@@ -318,4 +318,8 @@ public class Player extends Character {
     public void setLives(int lives) {
         this.lives = lives;
     }
+
+    public boolean isInvincible() {
+        return isInvincible;
+    }
 }
