@@ -59,7 +59,6 @@ public class Player extends Character {
                 this.world.openDoor(door); // it's to verify if the door correctly open (without checking the keys)
                 this.keys--;
             }
-
         }
     }
 

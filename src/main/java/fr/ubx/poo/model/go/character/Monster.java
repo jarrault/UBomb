@@ -31,7 +31,7 @@ public class Monster extends Character {
             return false;
         }
 
-        for (Monster monster : game.getMonsters()) {
+        for (Monster monster : this.game.getMonsters()) {
             if (monster.getPosition().equals(nextPos)) {
                 return false;
             }
