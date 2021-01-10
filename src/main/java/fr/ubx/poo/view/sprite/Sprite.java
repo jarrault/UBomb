@@ -42,6 +42,18 @@ public abstract class Sprite {
         layer.getChildren().add(imageView);
     }
 
+    public final void render(double opacity) {
+        if (imageView != null) {
+            remove();
+        }
+        updateImage();
+        imageView = new ImageView(this.image);
+        imageView.setX(getPosition().x * size);
+        imageView.setY(getPosition().y * size);
+        imageView.setOpacity(opacity);
+        layer.getChildren().add(imageView);
+    }
+
     public final void remove() {
         layer.getChildren().remove(imageView);
         imageView = null;
