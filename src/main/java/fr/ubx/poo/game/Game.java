@@ -82,14 +82,17 @@ public class Game {
         List<World> worldsList = new ArrayList<>();
 
         File folder = new File(worldPath);
-        int lvl = 1;
 
         for (final File fileEntry : Objects.requireNonNull(folder.listFiles())) {
             if (fileEntry.getName().contains(this.levelFilePrefix)) {
+                String fileName = fileEntry.getName();
+
+                // Remove "level" and ".txt" from the path and parsing the level
+                int level = Integer.parseInt(fileName.replace("level", "").replace(".txt", ""));
+
                 World world = new World(fileEntry.getPath());
-                world.setLevelNumber(lvl);
+                world.setLevelNumber(level);
                 worldsList.add(world);
-                lvl++;
             }
         }
 
@@ -128,7 +131,13 @@ public class Game {
      * @return the current world
      */
     public World getWorld() {
-        return this.worlds.get(this.level);
+        for (World world : this.worlds) {
+            if (world.getLevelNumber() - 1 == this.level) {
+                return world;
+            }
+        }
+
+        return null;
     }
 
     /**
