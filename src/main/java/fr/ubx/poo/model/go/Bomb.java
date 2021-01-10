@@ -46,8 +46,6 @@ public class Bomb extends GameObject {
     }
 
     private void checkIfInflictDamageToCharacter(Position position) {
-        //TODO complet this method
-
         // For Player
         if (this.game.getPlayer().getPosition().equals(position)) {
             this.game.inflictDamageToPlayer(1); //be correct when merge with other branchs don't worry
@@ -71,25 +69,18 @@ public class Bomb extends GameObject {
 
     private void bombExplodes() {
         // To make an explosion at the bomb's position
-//        Position pos = this.getPosition();
-//        Decor decor = this.world.get(pos);
-//        if (decor != null) {
-//            if (decor.isDestructible()) {
-//                // To destroy the entity
-//                this.world.clear(pos);
-//                makeExplosionAnimation(pos);
-//            }
-//        } else {
-//            makeExplosionAnimation(pos);
-//        }
-//        this.checkIfInflictDamageToCharacter(pos);
-
-        //OR if it only concerned Door
-        Decor decor = this.world.get(this.getPosition());
-        if (!(decor instanceof Door)) {
-            this.makeExplosionAnimation(this.getPosition());
-            this.checkIfInflictDamageToCharacter(this.getPosition());
+        Position pos = this.getPosition();
+        Decor decor = this.world.get(pos);
+        if (decor != null) {
+            if (decor.isDestructible()) {
+                // To destroy the entity
+                this.world.clear(pos);
+                makeExplosionAnimation(pos);
+            }
+        } else {
+            makeExplosionAnimation(pos);
         }
+        this.checkIfInflictDamageToCharacter(pos);
 
         // Loop to scan and process the explosion cross
         for (Direction direction : Direction.values()) {
