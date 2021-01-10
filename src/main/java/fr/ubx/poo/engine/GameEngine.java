@@ -36,11 +36,11 @@ public final class GameEngine {
     private final List<Sprite> sprites = new ArrayList<>();
     private final List<SpriteMonster> spriteMonsters = new ArrayList<>();
     private final List<SpriteBomb> spriteBombs = new ArrayList<>();
-    private List<Monster> monsters; //no need this is final ????
+    private List<Monster> monsters;
     private StatusBar statusBar;
     private Pane layer;
     private Input input;
-    private Stage stage;
+    private final Stage stage;
     private Sprite spritePlayer;
 
     public GameEngine(final String windowTitle, Game game, final Stage stage) {
@@ -54,7 +54,7 @@ public final class GameEngine {
     }
 
     /**
-     * To initialize importants elements (example : Scene, sprites, ...)
+     * To initialize important elements (example : Scene, sprites, ...)
      */
     private void initialize() {
         this.updateScene();
@@ -173,9 +173,8 @@ public final class GameEngine {
         root.getChildren().add(layer);
         statusBar = new StatusBar(root, sceneWidth, sceneHeight, game);
 
-        //update monsterts list
+        // Update monsters list
         this.monsters = new ArrayList<>(this.game.getMonsters());
-
 
         // Create Monsters sprites
         this.spriteMonsters.clear();
@@ -191,7 +190,7 @@ public final class GameEngine {
      * @param now the timestamp of the current frame given in nanoseconds.
      */
     private void update(long now) {
-        //update the game when the level changes
+        // Update the game when the level changes
         if (this.game.isLevelChange()) {
             this.game.setLevelChange(false);
             this.game.updateScene();
@@ -199,18 +198,11 @@ public final class GameEngine {
             updateSprites();
         }
 
-        //TODO it's for why code under ?
-//        if (player.isUpdateSprites()) {
-//            updateSprites();
-//            player.setUpdateSprites(false);
-//        }
-
         player.update(now);
         checkIfGameIsOver();
 
         updateMonsters(now);
         updateBombs(now);
-
         updateSprites();
     }
 
@@ -290,7 +282,7 @@ public final class GameEngine {
                 bombSprite.ifPresent(Sprite::remove);
                 bombSprite.ifPresent(spriteBombs::remove);
 
-                //to update sprite of entites which could be destroyed by bomb
+                // Update sprite of entities which could be destroyed by bomb
                 updateSprites();
             }
         }
@@ -303,6 +295,7 @@ public final class GameEngine {
         sprites.forEach(Sprite::render);
         spriteMonsters.forEach(Sprite::render);
         spriteBombs.forEach(Sprite::render);
+
         // last rendering to have player in the foreground
         spritePlayer.render();
     }
