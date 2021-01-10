@@ -42,20 +42,14 @@ public final class GameEngine {
     private Input input;
     private Stage stage;
     private Sprite spritePlayer;
-//    private Sprite spriteMonster;
 
     public GameEngine(final String windowTitle, Game game, final Stage stage) {
         this.windowTitle = windowTitle;
         this.game = game;
         this.player = game.getPlayer();
-//<<<<<<< HEAD
         this.monsters = game.getMonsters();
         this.stage = stage;
         initialize();
-//=======
-//        this.monsters = new ArrayList<>(game.getMonsters());
-//        initialize(stage, game);
-////>>>>>>> gestion_monstre
         buildAndSetGameLoop();
     }
 
@@ -66,18 +60,6 @@ public final class GameEngine {
         stage.setTitle(windowTitle);
         stage.setResizable(false);
         stage.show();
-//<<<<<<< HEAD
-//=======
-//
-//        input = new Input(scene);
-//        root.getChildren().add(layer);
-//        statusBar = new StatusBar(root, sceneWidth, sceneHeight, game);
-//        // Create decor sprites
-//        game.getWorld().forEach((pos, d) -> sprites.add(SpriteFactory.createDecor(layer, pos, d)));
-//        monsters.forEach((monster) -> spriteMonsters.add(SpriteFactory.createMonster(layer, monster)));
-//
-//        spritePlayer = SpriteFactory.createPlayer(layer, player);
-//>>>>>>> gestion_monstre
     }
 
     protected final void buildAndSetGameLoop() {
@@ -173,7 +155,6 @@ public final class GameEngine {
         statusBar = new StatusBar(root, sceneWidth, sceneHeight, game);
 
         //update monsterts list
-//        this.monsters.clear();//TODO maybe do it somewhere else // --- here to change when monterWorld refactor
         this.monsters = new ArrayList<>(this.game.getMonsters());
 
 
@@ -192,7 +173,6 @@ public final class GameEngine {
     private void update(long now) {
         //update the game when the level changes
         if (this.game.isLevelChange()) {
-//            monsters.clear();//TODO maybe do it somewhere else // --- here to change when monterWorld refactor
             this.game.setLevelChange(false);
             this.game.updateScene();
             updateScene();
@@ -227,7 +207,6 @@ public final class GameEngine {
             monster.update(now);
 
             if (!monster.isAlive()) {
-//                this.game.getWorld().removeMonsterPosition(monster.getPosition());
                 this.game.removeMonster(monster);
 
                 monsterIterator.remove();

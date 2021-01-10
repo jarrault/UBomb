@@ -125,8 +125,6 @@ public class Game {
     }
 
     public List<Monster> getMonsters() {
-//        System.out.println("Game.getMonsters ==> " + this.monsters + " ( " + this + " )");
-//        System.out.println("Game.getMonsters ==> " + this.monsters );
         return monsters;
     }
 
@@ -164,9 +162,7 @@ public class Game {
             throw new RuntimeException(e);
         }
 
-//        System.out.println("b> " + this.monsters.size());
         this.monsters = this.monstersLists.get(this.getWorld().getLevelNumber());
-//        System.out.println("a> " + this.monsters.size());
     }
 
     public void inflictDamageToPlayer(int damage) { //TODO I'm not sure it's a good way to do it
