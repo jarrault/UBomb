@@ -45,6 +45,11 @@ public class Bomb extends GameObject {
         }
     }
 
+    /**
+     * Check if the bomb is at the same position of the character or a monster
+     *
+     * @param position position of the bomb
+     */
     private void checkIfInflictDamageToCharacter(Position position) {
         // For Player
         if (this.game.getPlayer().getPosition().equals(position)) {
@@ -67,6 +72,9 @@ public class Bomb extends GameObject {
         this.game.getPlayer().incrementBombNumber();
     }
 
+    /**
+     * Manage the explosion of the bomb in each directions
+     */
     private void bombExplodes() {
         // To make an explosion at the bomb's position
         Position pos = this.getPosition();
@@ -90,6 +98,11 @@ public class Bomb extends GameObject {
         this.isExplode = true;
     }
 
+    /**
+     * Remove the decor if the explosion pass throw it and stop the explosion when an obstacle is in is way (except for bonus)
+     *
+     * @param direction direction of the explosion
+     */
     private void checkExplosionDirection(Direction direction) {
         Position pos = getPosition();
         boolean isExplosionObstructed = false;
