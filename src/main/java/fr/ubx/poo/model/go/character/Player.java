@@ -220,7 +220,7 @@ public class Player extends Character {
         if (convert > timeStamp) {
             timeStamp = convert;
 
-            long invincibilityTime = 1;
+            long invincibilityTime = 2;
             if (this.countdown == invincibilityTime) {
                 this.isInvincible = false;
                 this.timeStamp = 0;
