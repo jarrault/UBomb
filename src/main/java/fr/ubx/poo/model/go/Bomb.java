@@ -19,7 +19,7 @@ public class Bomb extends GameObject {
     private boolean isExplode;
     private boolean isDisplayed;
 
-    public Bomb(Game game, Position position, long creationDate, int bombRange) {
+    public Bomb(Game game, Position position, int bombRange) {
         super(game, position);
 
         this.bombRange = bombRange;
