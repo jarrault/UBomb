@@ -54,7 +54,7 @@ public class Monster extends Character {
             if (canMove(direction)) {
                 doMove(direction);
 
-                // to inflict damage to the player if it's possibleT
+                // to inflict damage to the player if it's possible
                 if(this.game.getPlayer().getPosition().equals(this.getPosition())){
                     this.game.inflictDamageToPlayer(1);
                 }

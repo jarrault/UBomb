@@ -137,7 +137,7 @@ public class Player extends Character {
             return null;
         }
 
-        Bomb bomb = new Bomb(game, getPosition(), now, this.bombsRange);
+        Bomb bomb = new Bomb(game, getPosition(), this.bombsRange);
         bombs.add(bomb);
 
         this.numberOfBombs--;
