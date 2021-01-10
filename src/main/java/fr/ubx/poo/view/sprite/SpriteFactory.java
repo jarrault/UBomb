@@ -41,7 +41,7 @@ public final class SpriteFactory {
             return new SpriteDecor(layer, factory.get(BONUS_BOMB_NUMBER_INC), position);
 
         if (decor instanceof Door)
-            return createDoor(layer, position, (Door) decor); //TODO i'm not sure the cast is correct here
+            return createDoor(layer, position, (Door) decor);
 
         if (decor instanceof Princess)
             return new SpriteDecor(layer, factory.get(PRINCESS), position);

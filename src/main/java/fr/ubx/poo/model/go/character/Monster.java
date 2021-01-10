@@ -13,9 +13,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class Monster extends Character {
 
-    /**
-     * //TODO
-     */
     long timeStamp = 0;
 
     public Monster(Game game, Position position) {
@@ -48,7 +45,7 @@ public class Monster extends Character {
 
         long convert = TimeUnit.MILLISECONDS.convert(now, TimeUnit.NANOSECONDS);// / 1__000__000__000;
 
-        if(convert > timeStamp + getSpeed()) { //TODO I don't know if it's a good idea to do it like that
+        if(convert > timeStamp + getSpeed()) {
             timeStamp = convert;
 
             if (canMove(direction)) {

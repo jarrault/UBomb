@@ -64,7 +64,6 @@ public class Door extends Decor {
         }
     }
 
-    //TODO could we factorize in one the two methods under ?
     /**
      * to check if the door is open to the next level
      *

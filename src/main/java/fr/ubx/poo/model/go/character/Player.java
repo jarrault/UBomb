@@ -57,16 +57,13 @@ public class Player extends Character {
         Position myPos = this.getPosition();
         Decor decor = this.game.getWorld().get(myPos);
 
-        if (decor instanceof Door) {//TODO verify if there is a better way to check it
+        if (decor instanceof Door) {
             Door door = (Door) decor;
             if (!door.isOpen() && keys >= 1) {//open the door only if the player have keys
                 this.game.getWorld().openDoor(door); // it's to verify if the door correctly open (without checking the keys)
                 this.keys--;
 
-
                 this.moveOnSpecialDecor();
-
-
             }
         }
     }
@@ -224,7 +221,7 @@ public class Player extends Character {
     private void checkInvincibility(long now) {
         long convert = TimeUnit.SECONDS.convert(now, TimeUnit.NANOSECONDS);// / 1__000__000__000;
 
-        if (convert > timeStamp) { //TODO I don't know if it's a good idea to do it like that
+        if (convert > timeStamp) {
             timeStamp = convert;
 
             long invincibilityTime = 1;
