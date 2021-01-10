@@ -28,7 +28,7 @@ public class Player extends Character {
     private int numberOfBombs = 1;
     private boolean bombRequested = false;
     private int bombsRange = 1;
-    private List<Bomb> bombs;
+    private final List<Bomb> bombs;
 
     private int countdown = 0;
     private boolean isInvincible = false;
@@ -37,10 +37,6 @@ public class Player extends Character {
         super(game, position);
         this.lives = game.getInitPlayerLives();
         this.bombs = new ArrayList<>();
-    }
-
-    public int getLives() {
-        return lives;
     }
 
     public void requestMove(Direction direction) {
@@ -151,7 +147,7 @@ public class Player extends Character {
         for (Monster monster : this.game.getMonsters()) {
             if (monster.getPosition().equals(getPosition())) {
                 this.inflictDamage(1);
-                checkIfPlayerLoose();
+                checkIfCharacterIsDead();
                 return;
             }
         }
@@ -161,10 +157,6 @@ public class Player extends Character {
         if (this.world.get(getPosition()) instanceof Princess) {
             this.winner = true;
         }
-    }
-
-    private void checkIfPlayerLoose() {
-        this.checkIfCharacterIsDead();
     }
 
     private void checkIfContainsBonus() {
@@ -179,7 +171,7 @@ public class Player extends Character {
 
     @Override
     public void update(long now) {
-        checkIfPlayerLoose();//
+        checkIfCharacterIsDead();
 
         if (moveRequested) {
             if (canMove(direction)) {
@@ -249,6 +241,14 @@ public class Player extends Character {
 
     }
 
+    @Override
+    public void inflictDamage(int damage){
+        if(!this.isInvincible){
+            this.lives -= damage;
+            this.isInvincible = true;
+        }
+    }
+
     /**
      * To add one bomb in number of allowed bomb in the player status
      */
@@ -256,12 +256,12 @@ public class Player extends Character {
         this.numberOfBombs++;
     }
 
-    public boolean isWinner() {
-        return winner;
+    public int getKeys() {
+        return keys;
     }
 
-    public void setBombs(List<Bomb> bomb){
-        this.bombs = bomb;
+    public boolean isWinner() {
+        return winner;
     }
 
     public int getNumberOfBombs() {
@@ -276,27 +276,19 @@ public class Player extends Character {
         return bombsRange;
     }
 
-    public int getKeys() {
-        return keys;
-    }
-
     public void setBombsRange(int bombsRange) {
         this.bombsRange = bombsRange;
-    }
-
-    public void setLives(int lives) {
-        this.lives = lives;
     }
 
     public List<Bomb> getBombs() {
         return bombs;
     }
 
-    @Override
-    public void inflictDamage(int damage){
-        if(!this.isInvincible){
-            this.lives -= damage;
-            this.isInvincible = true;
-        }
+    public int getLives() {
+        return this.lives;
+    }
+
+    public void setLives(int lives) {
+        this.lives = lives;
     }
 }
