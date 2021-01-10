@@ -22,29 +22,26 @@ public class Game {
 
     private final Player player;
 
-    //    private final ArrayList<Monster> monsters = new ArrayList<>();
-    private List<Monster> monsters; //TODO is it necessary it's been final ?
+    private List<Monster> monsters;
 
-    private final String worldPath;
-    public int initPlayerLives;
-    public String levelFilePrefix; //is it necessary to be public ?
+    private int initPlayerLives;
+    private String levelFilePrefix;
 
-    private Map<Integer, List<Monster>> monstersLists;
+    private final Map<Integer, List<Monster>> monstersLists;
 
     public Game(String worldPath) {
-        this.worldPath = worldPath;
         loadConfig(worldPath);
 
-        //to initialise all the world (thanks to WorldFileReader)
-        this.level = 0;//because worlds' list first index is 0
+        // To initialise all the world (thanks to WorldFileReader)
+        this.level = 0; // Because worlds' list first index is 0
         this.isLevelChange = false;
         this.worlds = initializeWorlds(worldPath);
         World world = this.getWorld();
 
-        //initialize monsters lists
+        // Initialize monsters lists
         this.monstersLists = initializeMonstersLists();
 
-        Position positionPlayer = null;
+        Position positionPlayer;
         try {
             positionPlayer = world.findPlayer();
             player = new Player(this, positionPlayer);
@@ -52,11 +49,6 @@ public class Game {
             System.err.println("Position not found : " + e.getLocalizedMessage());
             throw new RuntimeException(e);
         }
-
-//        ArrayList<Position> monstersPositions = world.findMonsters();
-//        for (Position monsterPosition : monstersPositions) {
-//            monsters.add(new Monster(this, monsterPosition));
-//        }
 
         this.monsters = this.monstersLists.get(world.getLevelNumber());
     }
@@ -81,7 +73,7 @@ public class Game {
     }
 
     /**
-     * To initialze worlds list
+     * To initialize worlds list
      *
      * @param worldPath path of the config files
      * @return list of worlds corresponding to the config files
@@ -92,16 +84,13 @@ public class Game {
         File folder = new File(worldPath);
         int lvl = 1;
 
-        for (final File fileEntry : folder.listFiles()) {
-            //TODO is it necessary to check if the folder contanis other folder ?
-
+        for (final File fileEntry : Objects.requireNonNull(folder.listFiles())) {
             if (fileEntry.getName().contains(this.levelFilePrefix)) {
                 World world = new World(fileEntry.getPath());
                 world.setLevelNumber(lvl);
                 worldsList.add(world);
                 lvl++;
             }
-
         }
 
         return worldsList;
@@ -201,15 +190,13 @@ public class Game {
     public void updateScene() {
         World world = this.getWorld();
 
-        Position positionPlayer = null;
+        Position positionPlayer;
         try {
             positionPlayer = world.findPlayer();
 
             this.player.setPosition(positionPlayer);
-//            player = new Player(this, positionPlayer);
 
         } catch (PositionNotFoundException e) {
-//            System.err.println("Position not found : " + e.getLocalizedMessage());
             throw new RuntimeException(e);
         }
 
@@ -221,9 +208,10 @@ public class Game {
      *
      * @param damage value of damage
      */
-    public void inflictDamageToPlayer(int damage) { //TODO I'm not sure it's a good way to do it
+    public void inflictDamageToPlayer(int damage) {
         this.getPlayer().inflictDamage(damage);
-        //to update player logic
+
+        // To update player logic
         this.getPlayer().update(0);
     }
 
@@ -233,9 +221,10 @@ public class Game {
      * @param monster the monster concerned
      * @param damage  value of damage
      */
-    public void inflictDamageToMonster(Monster monster, int damage) { //TODO I'm not sure it's a good way to do it
+    public void inflictDamageToMonster(Monster monster, int damage) {
         monster.inflictDamage(damage);
-        //to update monster logic
+
+        // To update monster logic
         monster.update(0);
     }
 
