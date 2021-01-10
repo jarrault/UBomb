@@ -3,8 +3,6 @@ package fr.ubx.poo.game;
 import fr.ubx.poo.model.decor.*;
 import fr.ubx.poo.model.decor.bonus.*;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Map;
 

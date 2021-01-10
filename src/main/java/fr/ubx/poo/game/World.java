@@ -4,14 +4,10 @@
 
 package fr.ubx.poo.game;
 
-import fr.ubx.poo.model.go.Bomb;
 import fr.ubx.poo.model.decor.Decor;
 import fr.ubx.poo.model.decor.Door;
-import fr.ubx.poo.model.go.character.Monster;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
@@ -105,14 +101,6 @@ public class World {
         return monstersPositions;
     }
 
-    public void addMonsterPosition(Position position){
-        this.monsterPositionList.add(position);
-    }
-
-    public void removeMonsterPosition(Position position){
-        this.monsterPositionList.remove(position);
-    }
-
     /**
      * To get the decor according to the position
      * @param position position of the decor
@@ -144,14 +132,6 @@ public class World {
     }
 
     /**
-     * To get a collection of all the decor in the grid
-     * @return Decor collection
-     */
-    public Collection<Decor> values() {
-        return grid.values();
-    }
-
-    /**
      * To check if the position is inside the screen
      * @param position concerned position
      * @return true if the position is inside the screen
@@ -161,7 +141,7 @@ public class World {
     }
 
     public boolean isEmpty(Position position) {
-        return grid.get(position) == null;
+        return grid.get(position) != null;
     }
 
     /**

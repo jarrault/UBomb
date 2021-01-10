@@ -5,7 +5,6 @@ import fr.ubx.poo.game.Game;
 import fr.ubx.poo.game.Position;
 import fr.ubx.poo.game.World;
 import fr.ubx.poo.model.decor.Decor;
-import fr.ubx.poo.model.decor.Door;
 import fr.ubx.poo.model.decor.Explosion;
 import fr.ubx.poo.model.go.character.Monster;
 
@@ -21,7 +20,7 @@ public class Bomb extends GameObject {
     private boolean isExplode;
     private boolean isDisplayed;
 
-    private World world;
+    private final World world;
 
     public Bomb(Game game, Position position, int bombRange) {
         super(game, position);

@@ -1,6 +1,5 @@
 package fr.ubx.poo.model.decor;
 
-import fr.ubx.poo.game.World;
 import fr.ubx.poo.game.WorldEntity;
 
 /**
@@ -25,14 +24,10 @@ public class Door extends Decor {
     /**
      * to open the door
      *
-     * @return true if it's correctly open
      */
-    public boolean openTheDoor() {
+    public void openTheDoor() {
         if (this.type == WorldEntity.DoorNextClosed) {
             this.type = WorldEntity.DoorNextOpened;
-            return true;
-        } else {
-            return false;
         }
     }
 
@@ -57,11 +52,7 @@ public class Door extends Decor {
      * @return true if the door is open
      */
     public boolean isOpen(){
-        if(this.type == WorldEntity.DoorNextClosed){
-            return false;
-        } else {
-            return true;
-        }
+        return this.type != WorldEntity.DoorNextClosed;
     }
 
     /**

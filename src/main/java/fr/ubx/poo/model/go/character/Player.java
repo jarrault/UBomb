@@ -96,7 +96,7 @@ public class Player extends Character {
             return false;
         }
 
-        if (!this.game.getWorld().isEmpty(newPosition)) {
+        if (this.game.getWorld().isEmpty(newPosition)) {
             return false;
         }
 
@@ -130,11 +130,9 @@ public class Player extends Character {
     }
 
     /**
-     * @param now time when the bomb is posed
-     *
      * @return the bomb the player posed, null if the player can't place it
      */
-    public Bomb doPutBomb(long now) {
+    public Bomb doPutBomb() {
         if (!canPutBomb()) {
             return null;
         }
@@ -197,7 +195,7 @@ public class Player extends Character {
 
         if (bombRequested) {
             if (canPutBomb()) {
-                doPutBomb(now);
+                doPutBomb();
             }
         }
 

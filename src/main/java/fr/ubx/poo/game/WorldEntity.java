@@ -26,11 +26,6 @@ public enum WorldEntity {
     BombNumberDec('-')
     ;
 
-
-    private char getCode() {
-        return code;
-    }
-
     private final char code;
 
     WorldEntity(char code) {

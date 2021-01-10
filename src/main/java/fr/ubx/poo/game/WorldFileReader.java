@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class WorldFileReader {
 
-    private String filepath;
+    private final String filepath;
     private WorldEntity[][] entities;
     private Dimension dimension;
 
@@ -60,7 +60,6 @@ public class WorldFileReader {
 
         String st = reader.readLine();
         int gridWidth = st.length();
-        int line_counter = 0;
 
         List<List<WorldEntity>> dynamicMatrix = new ArrayList<>();
 
@@ -79,7 +78,6 @@ public class WorldFileReader {
             }
 
             //to count number of lines
-            line_counter++;
 
             //complete dynamicMatrix
             dynamicMatrix.add(tmpDynamicMatrix);

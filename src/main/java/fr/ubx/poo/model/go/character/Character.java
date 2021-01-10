@@ -41,7 +41,7 @@ public abstract class Character extends GameObject implements Movable {
 
         Decor decor = this.game.getWorld().get(nextPosition);
 
-        if (!this.game.getWorld().isEmpty(nextPosition)) {
+        if (this.game.getWorld().isEmpty(nextPosition)) {
             return decor.isTraversable();
         }
 
