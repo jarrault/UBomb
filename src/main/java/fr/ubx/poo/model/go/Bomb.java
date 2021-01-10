@@ -4,6 +4,7 @@ import fr.ubx.poo.game.Direction;
 import fr.ubx.poo.game.Game;
 import fr.ubx.poo.game.Position;
 import fr.ubx.poo.model.decor.Decor;
+import fr.ubx.poo.model.decor.Door;
 import fr.ubx.poo.model.decor.Explosion;
 import fr.ubx.poo.model.go.character.Monster;
 
@@ -69,8 +70,26 @@ public class Bomb extends GameObject {
     }
 
     private void bombExplodes() {
-        // To make an explosion a the bomb's position
-        makeExplosionAnimation(this.getPosition());
+        // To make an explosion at the bomb's position
+//        Position pos = this.getPosition();
+//        Decor decor = this.world.get(pos);
+//        if (decor != null) {
+//            if (decor.isDestructible()) {
+//                // To destroy the entity
+//                this.world.clear(pos);
+//                makeExplosionAnimation(pos);
+//            }
+//        } else {
+//            makeExplosionAnimation(pos);
+//        }
+//        this.checkIfInflictDamageToCharacter(pos);
+
+        //OR if it only concerned Door
+        Decor decor = this.world.get(this.getPosition());
+        if (!(decor instanceof Door)) {
+            this.makeExplosionAnimation(this.getPosition());
+            this.checkIfInflictDamageToCharacter(this.getPosition());
+        }
 
         // Loop to scan and process the explosion cross
         for (Direction direction : Direction.values()) {
