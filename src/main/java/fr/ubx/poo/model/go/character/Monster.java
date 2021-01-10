@@ -31,6 +31,12 @@ public class Monster extends Character {
             return false;
         }
 
+        for (Monster monster : game.getMonsters()) {
+            if (monster.getPosition().equals(nextPos)) {
+                return false;
+            }
+        }
+
         return nextPositionInWorldAndEmpty(nextPos);
     }
 
