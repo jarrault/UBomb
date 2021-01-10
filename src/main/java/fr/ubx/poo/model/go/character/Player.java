@@ -55,13 +55,18 @@ public class Player extends Character {
      */
     public void requestOpenDoor() {
         Position myPos = this.getPosition();
-        Decor decor = this.world.get(myPos);
+        Decor decor = this.game.getWorld().get(myPos);
 
         if (decor instanceof Door) {//TODO verify if there is a better way to check it
             Door door = (Door) decor;
             if (!door.isOpen() && keys >= 1) {//open the door only if the player have keys
-                this.world.openDoor(door); // it's to verify if the door correctly open (without checking the keys)
+                this.game.getWorld().openDoor(door); // it's to verify if the door correctly open (without checking the keys)
                 this.keys--;
+
+
+                this.moveOnSpecialDecor();
+
+
             }
         }
     }
@@ -69,7 +74,7 @@ public class Player extends Character {
     @Override
     public boolean canMove(Direction direction) {
         Position nextPos = direction.nextPosition(getPosition());
-        Decor decor = this.world.get(nextPos);
+        Decor decor = this.game.getWorld().get(nextPos);
 
         if (decor instanceof Box) {
             return canMoveBox(direction, nextPos, decor);
@@ -90,11 +95,11 @@ public class Player extends Character {
     private boolean canMoveBox(Direction direction, Position nextPos, Decor decor) {
         Position newPosition = direction.nextPosition(nextPos);
 
-        if (!this.world.isInside(newPosition)) {
+        if (!this.game.getWorld().isInside(newPosition)) {
             return false;
         }
 
-        if (!this.world.isEmpty(newPosition)) {
+        if (!this.game.getWorld().isEmpty(newPosition)) {
             return false;
         }
 
@@ -104,8 +109,8 @@ public class Player extends Character {
             }
         }
 
-        world.clear(nextPos);
-        world.set(newPosition, decor);
+        this.game.getWorld().clear(nextPos);
+        this.game.getWorld().set(newPosition, decor);
 
         return true;
     }
@@ -162,7 +167,7 @@ public class Player extends Character {
      * Check if the player is on the Princess position, if so set the player to winner
      */
     private void checkIfPlayerWin() {
-        if (this.world.get(getPosition()) instanceof Princess) {
+        if (this.game.getWorld().get(getPosition()) instanceof Princess) {
             this.winner = true;
         }
     }
@@ -171,11 +176,11 @@ public class Player extends Character {
      * Check if the current position contains a bonus, if so execute the bonus action and removed it from the board
      */
     private void checkIfContainsBonus() {
-        Decor decor = world.get(getPosition());
+        Decor decor = this.game.getWorld().get(getPosition());
 
         if (decor instanceof Bonus) {
             ((Bonus) decor).doAction(this);
-            world.clear(getPosition());
+            this.game.getWorld().clear(getPosition());
         }
     }
 
@@ -238,7 +243,7 @@ public class Player extends Character {
      */
     private void moveOnSpecialDecor() {
         Position myPos = this.getPosition();
-        Decor decor = this.world.get(this.getPosition());
+        Decor decor = this.game.getWorld().get(this.getPosition());
 
         if (decor instanceof Door) {
             Door door = (Door) decor;
@@ -253,7 +258,7 @@ public class Player extends Character {
 
         if (decor instanceof Key) {
             this.keys++;
-            this.world.clear(myPos);
+            this.game.getWorld().clear(myPos);
         }
 
     }
