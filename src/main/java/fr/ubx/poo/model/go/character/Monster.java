@@ -46,9 +46,9 @@ public class Monster extends Character {
     public void update(long now) {
         Direction direction = Direction.random();
 
-        long convert = TimeUnit.SECONDS.convert(now, TimeUnit.NANOSECONDS);// / 1__000__000__000;
+        long convert = TimeUnit.MILLISECONDS.convert(now, TimeUnit.NANOSECONDS);// / 1__000__000__000;
 
-        if(convert > timeStamp) { //TODO I don't know if it's a good idea to do it like that
+        if(convert > timeStamp + getSpeed()) { //TODO I don't know if it's a good idea to do it like that
             timeStamp = convert;
 
             if (canMove(direction)) {
@@ -63,5 +63,9 @@ public class Monster extends Character {
 
         //to check if the monster is dead
         this.checkIfCharacterIsDead();
+    }
+
+    private double getSpeed() {
+        return (1000 / (1 + 0.1 * this.game.getWorld().getLevelNumber()));
     }
 }
