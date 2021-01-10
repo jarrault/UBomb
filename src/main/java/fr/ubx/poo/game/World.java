@@ -22,7 +22,7 @@ public class World {
 
     private final ArrayList<Position> monsterPositionList;
 
-    private int levelNumber;//it could be final ?
+    private int levelNumber;
     private boolean comeFromNextLevel;
 
     public World(WorldEntity[][] raw) {
@@ -54,8 +54,6 @@ public class World {
      * @throws PositionNotFoundException if the player is not found
      */
     public Position findPlayer() throws PositionNotFoundException {
-//        debug_showGrid();
-
         for (int x = 0; x < dimension.width; x++) {
             for (int y = 0; y < dimension.height; y++) {
 
@@ -81,36 +79,11 @@ public class World {
         throw new PositionNotFoundException("Player (in level " + this.levelNumber + ")");
     }
 
-    private void debug_showGrid() {
-        for (int x = 0; x < dimension.height; x++) {
-            for (int y = 0; y < dimension.width; y++) {
-                System.out.print(raw[x][y]);
-            }
-            System.out.println();
-        }
-
-    }
-
-
     /**
      * To find positions of monsters
      * @return list of monsters' position
      */
     public ArrayList<Position> findMonsters() {
-//        ArrayList<Position> monstersPositions = new ArrayList<>();
-//
-//        for (int x = 0; x < dimension.width; x++) {
-//            for (int y = 0; y < dimension.height; y++) {
-//                if (raw[y][x] == WorldEntity.Monster) {
-////                if (raw[x][y] == WorldEntity.Monster) {
-//                    monstersPositions.add(new Position(x, y));
-//                }
-//            }
-//        }
-//
-//        return monstersPositions;
-        //this is old version of the method, I keep it because it's a temporary modification
-
         return this.monsterPositionList;
     }
 
@@ -124,7 +97,6 @@ public class World {
         for (int x = 0; x < dimension.width; x++) {
             for (int y = 0; y < dimension.height; y++) {
                 if (raw[y][x] == WorldEntity.Monster) {
-//                if (raw[x][y] == WorldEntity.Monster) {
                     monstersPositions.add(new Position(x, y));
                 }
             }
@@ -138,9 +110,7 @@ public class World {
     }
 
     public void removeMonsterPosition(Position position){
-//        System.out.println("remove monster pos => " + position);
-        this.monsterPositionList.remove(position); //TODO it don't work because when monster died, he is not at the same postion than when we create him
-//        System.out.println("oui");
+        this.monsterPositionList.remove(position);
     }
 
     /**
@@ -169,12 +139,14 @@ public class World {
         grid.remove(position);
     }
 
-    //TODO javadoc
     public void forEach(BiConsumer<Position, Decor> fn) {
         grid.forEach(fn);
     }
 
-    //TODO javadoc
+    /**
+     * To get a collection of all the decor in the grid
+     * @return Decor collection
+     */
     public Collection<Decor> values() {
         return grid.values();
     }

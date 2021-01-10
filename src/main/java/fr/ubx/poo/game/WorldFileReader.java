@@ -59,7 +59,7 @@ public class WorldFileReader {
         BufferedReader reader = new BufferedReader(new FileReader(this.filepath));
 
         String st = reader.readLine();
-        int gridWidth = st.length();//TODO I thing it throws an exception if st is null
+        int gridWidth = st.length();
         int line_counter = 0;
 
         List<List<WorldEntity>> dynamicMatrix = new ArrayList<>();
@@ -78,8 +78,6 @@ public class WorldFileReader {
                 tmpDynamicMatrix.add(entity);
             }
 
-            //TODO throw if size is incoherent
-
             //to count number of lines
             line_counter++;
 
@@ -91,8 +89,6 @@ public class WorldFileReader {
         //intiate new tab for entities
         int gridHeight = dynamicMatrix.size();
         this.entities = new WorldEntity[gridHeight][gridWidth];
-
-        //TODO throw if number of line is incoherent
 
         //initiate entities
         for(int i = 0; i < gridHeight; i++){

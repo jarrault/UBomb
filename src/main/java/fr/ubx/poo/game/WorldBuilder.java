@@ -44,8 +44,6 @@ public class WorldBuilder {
         return WorldBuilder.build(worldFileReader.getEntities(), worldFileReader.getDimension());
     }
 
-    //TODO is it a good idea to code build(worldPath) which create a WorldFileReader object to prevent World initiate one ?
-
     /**
      * To get the correct decor according to an entity
      *
