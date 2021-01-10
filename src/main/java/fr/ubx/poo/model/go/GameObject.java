@@ -14,7 +14,6 @@ import fr.ubx.poo.model.Entity;
  */
 public abstract class GameObject extends Entity {
     protected final Game game;
-    protected World world;
     private Position position;
 
 
@@ -28,7 +27,6 @@ public abstract class GameObject extends Entity {
 
     public GameObject(Game game, Position position) {
         this.game = game;
-        this.world = game.getWorld();
         this.position = position;
     }
 }

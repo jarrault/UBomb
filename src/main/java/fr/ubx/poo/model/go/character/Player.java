@@ -195,10 +195,6 @@ public class Player extends Character {
             }
         }
 
-        if (this.game.isLevelChange()) {
-            this.world = this.game.getWorld();
-        }
-
         if (bombRequested) {
             if (canPutBomb()) {
                 doPutBomb(now);

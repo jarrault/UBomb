@@ -3,6 +3,7 @@ package fr.ubx.poo.model.go;
 import fr.ubx.poo.game.Direction;
 import fr.ubx.poo.game.Game;
 import fr.ubx.poo.game.Position;
+import fr.ubx.poo.game.World;
 import fr.ubx.poo.model.decor.Decor;
 import fr.ubx.poo.model.decor.Door;
 import fr.ubx.poo.model.decor.Explosion;
@@ -20,12 +21,15 @@ public class Bomb extends GameObject {
     private boolean isExplode;
     private boolean isDisplayed;
 
+    private World world;
+
     public Bomb(Game game, Position position, int bombRange) {
         super(game, position);
 
         this.bombRange = bombRange;
         this.isExplode = false;
         this.isDisplayed = false;
+        this.world = game.getWorld();
     }
 
     long timeStamp = 0;
