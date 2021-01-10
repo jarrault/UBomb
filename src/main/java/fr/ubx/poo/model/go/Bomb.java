@@ -48,7 +48,7 @@ public class Bomb extends GameObject {
     private void checkIfInflictDamageToCharacter(Position position) {
         // For Player
         if (this.game.getPlayer().getPosition().equals(position)) {
-            this.game.inflictDamageToPlayer(1); //be correct when merge with other branchs don't worry
+            this.game.inflictDamageToPlayer(1);
         }
 
         // For Monster
@@ -102,7 +102,7 @@ public class Bomb extends GameObject {
 
                 if (decor != null) {
                     if (decor.isDestructible() && !isExplosionObstructed) {
-                        if (!decor.isTraversable()) { // It work for Box and other decor which "stop" explosion ?
+                        if (!decor.isTraversable()) {
                             isExplosionObstructed = true;
                         }
 
