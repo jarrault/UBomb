@@ -24,16 +24,14 @@ public class Player extends Character {
 
     private int keys = 0;
     private boolean winner;
-    private boolean updateSprites = false;
-  
+
     private int numberOfBombs = 1;
     private boolean bombRequested = false;
     private int bombsRange = 1;
     private List<Bomb> bombs;
 
     private int countdown = 0;
-    private long invicibilityTime = 1;
-    private boolean isInvicible = false;
+    private boolean isInvincible = false;
 
     public Player(Game game, Position position) {
         super(game, position);
@@ -62,7 +60,6 @@ public class Player extends Character {
         if (decor instanceof Door) {//TODO verify if there is a better way to check it
             Door door = (Door) decor;
             if (!door.isOpen() && keys >= 1) {//open the door only if the player have keys
-                this.updateSprites = true;
                 this.world.openDoor(door); // it's to verify if the door correctly open (without checking the keys)
                 this.keys--;
             }
@@ -114,7 +111,6 @@ public class Player extends Character {
 
         world.clear(nextPos);
         world.set(newPosition, decor);
-        updateSprites = true;
 
         return true;
     }
@@ -141,7 +137,6 @@ public class Player extends Character {
         Bomb bomb = new Bomb(game, getPosition(), now, this.bombsRange);
         this.numberOfBombs--;
         bombs.add(bomb);
-        updateSprites = true;
         return bomb;
     }
 
@@ -179,7 +174,6 @@ public class Player extends Character {
             ((Bonus) decor).doAction(this);
 
             world.clear(getPosition());
-            updateSprites = true;
         }
     }
 
@@ -206,22 +200,23 @@ public class Player extends Character {
             }
         }
 
-        if(this.isInvicible) {
-            checkInvicibility(now);
+        if(this.isInvincible) {
+            checkInvincibility(now);
         }
 
         bombRequested = false;
         moveRequested = false;
     }
 
-    private void checkInvicibility(long now) {
+    private void checkInvincibility(long now) {
         long convert = TimeUnit.SECONDS.convert(now, TimeUnit.NANOSECONDS);// / 1__000__000__000;
 
         if (convert > timeStamp) { //TODO I don't know if it's a good idea to do it like that
             timeStamp = convert;
 
-            if (this.countdown == this.invicibilityTime) {
-                this.isInvicible = false;
+            long invincibilityTime = 1;
+            if (this.countdown == invincibilityTime) {
+                this.isInvincible = false;
 
                 this.timeStamp = 0;
                 this.countdown = 0;
@@ -250,17 +245,8 @@ public class Player extends Character {
         if(decor instanceof Key){
             this.keys++;
             this.world.clear(myPos);
-            this.updateSprites = true;
         }
 
-    }
-
-    public void addBomb(Bomb bomb){
-        this.bombs.add(bomb);
-    }
-
-    public void removeBomb(Bomb bomb){
-        this.bombs.remove(bomb);
     }
 
     /**
@@ -272,14 +258,6 @@ public class Player extends Character {
 
     public boolean isWinner() {
         return winner;
-    }
-
-    public boolean isUpdateSprites() {
-        return updateSprites;
-    }
-
-    public void setUpdateSprites(boolean updateSprites) {
-        this.updateSprites = updateSprites;
     }
 
     public void setBombs(List<Bomb> bomb){
@@ -316,9 +294,9 @@ public class Player extends Character {
 
     @Override
     public void inflictDamage(int damage){
-        if(!this.isInvicible){
+        if(!this.isInvincible){
             this.lives -= damage;
-            this.isInvicible = true;
+            this.isInvincible = true;
         }
     }
 }
