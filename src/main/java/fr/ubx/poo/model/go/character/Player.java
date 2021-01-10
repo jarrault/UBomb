@@ -70,22 +70,13 @@ public class Player extends Character {
     @Override
     public boolean canMove(Direction direction) {
         Position nextPos = direction.nextPosition(getPosition());
-
-        if (!this.world.isInside(nextPos)) {
-            return false;
-        }
-
         Decor decor = this.world.get(nextPos);
 
         if (decor instanceof Box) {
             return canMoveBox(direction, nextPos, decor);
         }
 
-        if (decor != null) {
-            return decor.isTraversable();
-        }
-
-        return true;
+        return nextPositionInWorldAndEmpty(nextPos);
     }
 
     private boolean canMoveBox(Direction direction, Position nextPos, Decor decor) {
@@ -95,7 +86,7 @@ public class Player extends Character {
             return false;
         }
 
-        if (this.world.get(newPosition) != null) {
+        if (!this.world.isEmpty(newPosition)) {
             return false;
         }
 
@@ -136,13 +127,6 @@ public class Player extends Character {
         return bomb;
     }
 
-    public void doMove(Direction direction) {
-        Position nextPos = direction.nextPosition(getPosition());
-        setPosition(nextPos);
-
-        moveOnSpecialDecor();
-    }
-
     private void removeLifeIfOnMonster() {
         for (Monster monster : this.game.getMonsters()) {
             if (monster.getPosition().equals(getPosition())) {
@@ -179,6 +163,7 @@ public class Player extends Character {
                 removeLifeIfOnMonster();
                 checkIfPlayerWin();
                 checkIfContainsBonus();
+                moveOnSpecialDecor();
             }
         }
 

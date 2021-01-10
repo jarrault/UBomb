@@ -3,7 +3,8 @@ package fr.ubx.poo.model.go.character;
 import fr.ubx.poo.game.Direction;
 import fr.ubx.poo.game.Game;
 import fr.ubx.poo.game.Position;
-import fr.ubx.poo.model.decor.*;
+import fr.ubx.poo.model.decor.Decor;
+import fr.ubx.poo.model.decor.Door;
 
 import java.util.concurrent.TimeUnit;
 
@@ -24,38 +25,26 @@ public class Monster extends Character {
     @Override
     public boolean canMove(Direction direction) {
         Position nextPos = direction.nextPosition(getPosition());
+        Decor decor = this.world.get(nextPos);
 
-        if (!this.game.getWorld().isInside(nextPos)) {
+        if (decor instanceof Door) {
             return false;
         }
 
-        Decor decor = this.game.getWorld().get(nextPos);
-
-        if (decor != null) {
-            return decor.isTraversable();
-        }
-
-        return true;
-    }
-
-    @Override
-    public void doMove(Direction direction) {
-        Position nextPos = direction.nextPosition(getPosition());
-        setPosition(nextPos);
-
+        return nextPositionInWorldAndEmpty(nextPos);
     }
 
     @Override
     public void update(long now) {
-        Direction dir = Direction.random();
+        Direction direction = Direction.random();
 
         long convert = TimeUnit.SECONDS.convert(now, TimeUnit.NANOSECONDS);// / 1__000__000__000;
 
         if(convert > timeStamp) { //TODO I don't know if it's a good idea to do it like that
             timeStamp = convert;
 
-            if (canMove(dir)) {
-                doMove(dir);
+            if (canMove(direction)) {
+                doMove(direction);
 
                 // to inflict damage to the player if it's possibleT
                 if(this.game.getPlayer().getPosition().equals(this.getPosition())){
