@@ -80,6 +80,9 @@ public class Bomb extends GameObject {
     }
 
     private void bombExplodes() {
+        //to make an explosion a the bomb's position
+        makeExplosion(this.getPosition());
+
         //loop to scan and process the explosion cross
         for (Direction direction : Direction.values()) {
             checkExplosionDirection(direction);
